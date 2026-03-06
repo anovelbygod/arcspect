@@ -3,21 +3,27 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PM Agent — AI Documentation Tool</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<title>Arcspect — Great products start here.</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0A0A0F;
-    --surface: #111118;
-    --surface2: #18181F;
-    --border: #2A2A35;
-    --accent: #00E5A0;
-    --accent2: #7B61FF;
-    --text: #F0F0F5;
-    --muted: #7A7A8C;
-    --danger: #FF4D6D;
+    --bg: #080C09;
+    --surface: #0D1410;
+    --surface2: #111A13;
+    --surface3: #162019;
+    --border: #1E2E22;
+    --border2: #243628;
+    --aventurine: #4A7C59;
+    --aventurine-light: #6BAF80;
+    --aventurine-glow: #5D9E6E;
+    --gold: #C9A84C;
+    --gold-soft: #E8C97A;
+    --text: #EDF2EE;
+    --text2: #B8CCB9;
+    --muted: #6B8A6E;
+    --danger: #E05A6A;
     --mono: 'DM Mono', monospace;
-    --display: 'Syne', sans-serif;
+    --display: 'Plus Jakarta Sans', sans-serif;
     --body: 'DM Sans', sans-serif;
   }
 
@@ -31,493 +37,551 @@
     overflow-x: hidden;
   }
 
-  /* Background grid */
+  /* Subtle organic background */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(74,124,89,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 80%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 60% 40%, rgba(74,124,89,0.04) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* Grain texture overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none; z-index: 0;
   }
 
   /* Header */
   header {
-    position: relative;
-    z-index: 10;
-    padding: 24px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: relative; z-index: 10;
+    padding: 20px 48px;
+    display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--border);
-    background: rgba(10,10,15,0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(8,12,9,0.85);
+    backdrop-filter: blur(16px);
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .logo { display: flex; align-items: center; gap: 14px; }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--aventurine);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: rgba(74,124,89,0.08);
   }
 
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--accent);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
+  .logo-mark::before {
+    content: '';
+    width: 12px; height: 12px;
+    background: var(--aventurine-light);
+    border-radius: 3px;
+    transform: rotate(15deg);
+    box-shadow: 0 0 12px rgba(107,175,128,0.4);
   }
 
-  .logo-text {
+  .logo-name {
     font-family: var(--display);
     font-weight: 800;
-    font-size: 18px;
+    font-size: 20px;
     letter-spacing: -0.5px;
+    color: var(--text);
   }
 
-  .logo-text span {
-    color: var(--accent);
+  .logo-name span {
+    color: var(--aventurine-light);
   }
 
-  .header-badge {
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .badge {
     font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    border: 1px solid rgba(0,229,160,0.3);
+    font-size: 10px;
     padding: 4px 10px;
     border-radius: 20px;
-    background: rgba(0,229,160,0.05);
+    letter-spacing: 0.5px;
   }
 
-  /* Main layout */
+  .badge-version {
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.25);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .badge-ai {
+    color: var(--aventurine-light);
+    border: 1px solid rgba(107,175,128,0.25);
+    background: rgba(107,175,128,0.06);
+  }
+
+  /* Main */
   main {
-    position: relative;
-    z-index: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 48px 40px;
+    position: relative; z-index: 1;
+    max-width: 1320px; margin: 0 auto;
+    padding: 56px 48px 80px;
   }
 
   /* Hero */
   .hero {
-    text-align: center;
-    margin-bottom: 56px;
-    animation: fadeUp 0.6s ease both;
+    text-align: center; margin-bottom: 56px;
+    animation: fadeUp 0.7s ease both;
   }
 
-  .hero-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--border2);
   }
 
   .hero h1 {
     font-family: var(--display);
-    font-size: clamp(36px, 5vw, 56px);
+    font-size: clamp(40px, 5.5vw, 72px);
     font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -2px;
-    margin-bottom: 16px;
+    line-height: 1.05;
+    letter-spacing: -2.5px;
+    margin-bottom: 20px;
+    color: var(--text);
   }
 
   .hero h1 em {
-    font-style: normal;
-    color: var(--accent);
+    font-style: italic;
+    color: var(--aventurine-light);
   }
 
-  .hero p {
+  .hero-sub {
+    font-size: 15px;
     color: var(--muted);
-    font-size: 16px;
-    font-weight: 300;
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.7;
+    font-weight: 400;
+    letter-spacing: 0.3px;
   }
 
-  /* Mode selector */
+  /* Mode grid */
   .mode-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin-bottom: 40px;
-    animation: fadeUp 0.6s ease 0.1s both;
+    gap: 10px; margin-bottom: 36px;
+    animation: fadeUp 0.7s ease 0.1s both;
   }
 
   .mode-btn {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 12px;
+    border-radius: 14px;
+    padding: 18px 12px 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     text-align: center;
     color: var(--muted);
+    position: relative;
+    overflow: hidden;
   }
 
-  .mode-btn:hover {
-    border-color: var(--accent);
-    color: var(--text);
-    background: var(--surface2);
+  .mode-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(74,124,89,0.08) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.25s;
   }
+
+  .mode-btn:hover { border-color: var(--aventurine); color: var(--text2); }
+  .mode-btn:hover::before { opacity: 1; }
 
   .mode-btn.active {
-    border-color: var(--accent);
-    background: rgba(0,229,160,0.08);
+    border-color: var(--aventurine-light);
     color: var(--text);
+    background: var(--surface2);
+    box-shadow: 0 0 0 1px rgba(107,175,128,0.15), inset 0 1px 0 rgba(107,175,128,0.08);
   }
+  .mode-btn.active::before { opacity: 1; }
 
-  .mode-btn .mode-icon {
-    font-size: 22px;
-    margin-bottom: 8px;
-    display: block;
-  }
+  .mode-icon { font-size: 22px; margin-bottom: 10px; display: block; }
 
-  .mode-btn .mode-label {
-    font-family: var(--display);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+  .mode-label {
+    font-family: var(--body);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.3px;
     line-height: 1.3;
+    text-transform: none;
   }
 
   /* Workspace */
   .workspace {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    animation: fadeUp 0.6s ease 0.2s both;
+    grid-template-columns: 5fr 7fr;
+    gap: 20px;
+    animation: fadeUp 0.7s ease 0.2s both;
   }
 
   .panel {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
+    display: flex; flex-direction: column;
   }
 
   .panel-header {
-    padding: 16px 20px;
+    padding: 14px 20px;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     background: var(--surface2);
   }
 
-  .panel-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
+  .panel-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase;
   }
 
-  .panel-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border);
+  .panel-status {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
   }
 
-  .panel-dot.active {
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border2);
+    transition: all 0.3s;
+  }
+  .status-dot.live {
+    background: var(--aventurine-light);
+    box-shadow: 0 0 6px rgba(107,175,128,0.6);
   }
 
-  /* Input panel */
-  .context-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    padding: 16px 20px 8px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+  /* Input body */
+  .input-body { flex: 1; display: flex; flex-direction: column; }
 
-  .mode-description {
-    font-size: 13px;
-    color: var(--muted);
-    padding: 0 20px 12px;
-    line-height: 1.6;
+  .mode-hint {
+    font-size: 12px; color: var(--muted);
+    padding: 12px 20px; line-height: 1.6;
     border-bottom: 1px solid var(--border);
-    min-height: 48px;
+    background: rgba(74,124,89,0.03);
+    min-height: 52px;
+  }
+
+  .field-label {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--muted); padding: 14px 20px 6px;
+    letter-spacing: 1.5px; text-transform: uppercase;
   }
 
   textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-family: var(--body);
-    font-size: 15px;
-    font-weight: 300;
-    line-height: 1.7;
-    padding: 20px;
-    resize: none;
-    outline: none;
-    min-height: 200px;
+    width: 100%; background: transparent; border: none;
+    color: var(--text); font-family: var(--body);
+    font-size: 14px; font-weight: 400; line-height: 1.75;
+    padding: 6px 20px 16px; resize: none; outline: none;
   }
+  textarea::placeholder { color: var(--muted); opacity: 0.45; }
 
-  textarea::placeholder {
-    color: var(--muted);
-    opacity: 0.5;
-  }
+  /* Context */
+  .context-section { border-top: 1px solid var(--border); }
 
-  /* API key section */
-  .api-section {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
+  .context-trigger {
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; transition: background 0.2s;
     background: var(--surface2);
   }
+  .context-trigger:hover { background: var(--surface3); }
 
-  .api-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+  .context-trigger-left { display: flex; align-items: center; gap: 10px; }
+
+  .context-trigger-label {
+    font-family: var(--body); font-size: 12px;
+    font-weight: 500; color: var(--text2);
   }
 
-  .api-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .api-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .api-input:focus {
-    border-color: var(--accent);
-  }
-
-  .generate-btn {
-    background: var(--accent);
-    color: #0A0A0F;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-family: var(--display);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    letter-spacing: 0.3px;
-  }
-
-  .generate-btn:hover {
-    background: #00FFB2;
-    transform: translateY(-1px);
-  }
-
-  .generate-btn:active {
-    transform: translateY(0);
-  }
-
-  .generate-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Output panel */
-  .output-area {
-    padding: 20px;
-    min-height: 340px;
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--text);
-    font-weight: 300;
-  }
-
-  .output-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    color: var(--muted);
-    text-align: center;
-    gap: 12px;
-  }
-
-  .output-empty .empty-icon {
-    font-size: 40px;
-    opacity: 0.3;
-  }
-
-  .output-empty p {
-    font-size: 13px;
-    max-width: 200px;
-    line-height: 1.6;
-  }
-
-  /* Markdown rendering */
-  .output-content h1, .output-content h2, .output-content h3 {
-    font-family: var(--display);
-    font-weight: 700;
-    margin: 20px 0 8px;
-    color: var(--text);
-  }
-
-  .output-content h1 { font-size: 20px; letter-spacing: -0.5px; }
-  .output-content h2 { font-size: 16px; color: var(--accent); letter-spacing: 0.3px; }
-  .output-content h3 { font-size: 14px; color: var(--muted); }
-
-  .output-content p { margin-bottom: 12px; }
-
-  .output-content ul, .output-content ol {
-    padding-left: 20px;
-    margin-bottom: 12px;
-  }
-
-  .output-content li { margin-bottom: 6px; }
-
-  .output-content strong {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .output-content code {
-    font-family: var(--mono);
-    font-size: 12px;
-    background: var(--surface2);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--accent2);
-  }
-
-  .output-content hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 16px 0;
-  }
-
-  /* Output actions */
-  .output-actions {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 8px;
-    background: var(--surface2);
-  }
-
-  .action-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 16px;
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s;
+  .context-pill {
+    font-family: var(--mono); font-size: 9px;
+    background: rgba(201,168,76,0.08);
+    color: var(--gold-soft);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 2px 7px; border-radius: 10px;
     letter-spacing: 0.5px;
   }
 
-  .action-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .context-arrow {
+    font-size: 10px; color: var(--muted);
+    transition: transform 0.2s;
+  }
+  .context-arrow.open { transform: rotate(180deg); }
+
+  .context-inner { display: none; padding: 12px 20px 16px; background: var(--surface2); }
+  .context-inner.open { display: block; }
+
+  .context-field {
+    width: 100%; background: var(--bg);
+    border: 1px solid var(--border2); border-radius: 10px;
+    color: var(--text); font-family: var(--body);
+    font-size: 13px; font-weight: 300; line-height: 1.65;
+    padding: 12px 16px; resize: none; outline: none;
+    min-height: 90px; transition: border-color 0.2s;
+  }
+  .context-field:focus { border-color: var(--aventurine); }
+  .context-field::placeholder { color: var(--muted); opacity: 0.4; }
+
+  .context-tip {
+    font-size: 11px; color: var(--muted);
+    margin-top: 8px; line-height: 1.5;
+    padding-left: 2px;
   }
 
-  .action-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
+  /* API */
+  .api-section {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
   }
 
-  /* Loading state */
+  .api-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 10px;
+  }
+
+  .api-label {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase;
+  }
+
+  .remember-control {
+    display: flex; align-items: center; gap: 7px; cursor: pointer;
+  }
+
+  .remember-text {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--muted); letter-spacing: 0.5px;
+  }
+
+  .toggle {
+    width: 32px; height: 18px;
+    background: var(--border2); border-radius: 20px;
+    position: relative; transition: background 0.25s; cursor: pointer;
+  }
+
+  .toggle-thumb {
+    width: 12px; height: 12px;
+    background: var(--muted); border-radius: 50%;
+    position: absolute; top: 3px; left: 3px;
+    transition: all 0.25s;
+  }
+
+  .api-row { display: flex; gap: 10px; }
+
+  .api-input {
+    flex: 1; background: var(--bg);
+    border: 1px solid var(--border2); border-radius: 10px;
+    padding: 10px 14px; color: var(--text);
+    font-family: var(--mono); font-size: 12px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .api-input:focus { border-color: var(--aventurine); }
+
+  .generate-btn {
+    background: var(--aventurine);
+    color: var(--bg);
+    border: none; border-radius: 10px;
+    padding: 10px 22px;
+    font-family: var(--body); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease;
+    white-space: nowrap; letter-spacing: 0.2px;
+  }
+  .generate-btn:hover { background: var(--aventurine-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(74,124,89,0.3); }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Output panel */
+  .output-panel { display: flex; flex-direction: column; }
+
+  .output-toolbar {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+  }
+
+  .toolbar-btn {
+    background: transparent;
+    border: 1px solid var(--border2); border-radius: 7px;
+    padding: 5px 14px; color: var(--muted);
+    font-family: var(--mono); font-size: 10px;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .toolbar-btn:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
+  .toolbar-btn.active { border-color: var(--aventurine); color: var(--aventurine-light); background: rgba(74,124,89,0.08); }
+  .toolbar-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  .toolbar-sep { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
+
+  .word-count {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted); margin-left: auto;
+  }
+
+  .output-scroll {
+    flex: 1; overflow-y: auto;
+    min-height: 360px; max-height: 560px;
+  }
+
+  /* Scrollbar */
+  .output-scroll::-webkit-scrollbar { width: 4px; }
+  .output-scroll::-webkit-scrollbar-track { background: transparent; }
+  .output-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  .output-rendered { padding: 24px; font-size: 13px; line-height: 1.85; }
+  .output-editable {
+    width: 100%; min-height: 360px;
+    background: transparent; border: none;
+    color: var(--text2); font-family: var(--mono);
+    font-size: 12px; line-height: 1.8;
+    padding: 24px; resize: none; outline: none; display: none;
+  }
+
+  .output-empty {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 360px; gap: 16px; padding: 40px;
+  }
+
+  .empty-gem {
+    width: 48px; height: 48px;
+    border: 1px solid var(--border2);
+    border-radius: 12px; transform: rotate(15deg);
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(74,124,89,0.05);
+    color: var(--aventurine); font-size: 20px;
+    opacity: 0.4;
+  }
+
+  .empty-text {
+    font-size: 13px; color: var(--muted);
+    text-align: center; max-width: 200px; line-height: 1.6;
+  }
+
+  /* Markdown */
+  .output-rendered h1 {
+    font-family: var(--display);
+    font-weight: 700; font-size: 20px;
+    letter-spacing: -0.5px; margin: 0 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .output-rendered h2 {
+    font-family: var(--body); font-weight: 600;
+    font-size: 10px; color: var(--aventurine-light);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin: 22px 0 10px;
+  }
+  .output-rendered h3 {
+    font-family: var(--body); font-weight: 600;
+    font-size: 13px; color: var(--text2);
+    margin: 16px 0 8px;
+  }
+  .output-rendered p { margin-bottom: 10px; color: var(--text2); }
+  .output-rendered ul { padding-left: 18px; margin-bottom: 10px; }
+  .output-rendered li { margin-bottom: 6px; color: var(--text2); }
+  .output-rendered strong { color: var(--text); font-weight: 600; }
+  .output-rendered em { color: var(--gold-soft); font-style: italic; }
+  .output-rendered code {
+    font-family: var(--mono); font-size: 11px;
+    background: var(--surface3); padding: 2px 6px;
+    border-radius: 4px; color: var(--aventurine-light);
+    border: 1px solid var(--border);
+  }
+  .output-rendered hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .output-rendered table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }
+  .output-rendered th {
+    background: var(--surface3); padding: 9px 12px;
+    text-align: left; font-family: var(--mono); font-size: 9px;
+    color: var(--muted); letter-spacing: 1px; text-transform: uppercase;
+    border: 1px solid var(--border);
+  }
+  .output-rendered td { padding: 8px 12px; border: 1px solid var(--border); vertical-align: top; color: var(--text2); }
+  .output-rendered .cb { color: var(--aventurine-light); margin-right: 7px; }
+
+  /* Output actions */
+  .output-actions {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: center;
+    background: var(--surface2);
+  }
+
+  .act-btn {
+    background: transparent;
+    border: 1px solid var(--border2); border-radius: 8px;
+    padding: 8px 16px; color: var(--muted);
+    font-family: var(--mono); font-size: 10px;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .act-btn:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
+  .act-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  .act-btn-clear {
+    margin-left: auto;
+    color: var(--muted);
+  }
+  .act-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* Loading */
   .loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 300px;
-    gap: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 360px; gap: 20px;
   }
 
-  .loading-dots {
-    display: flex;
-    gap: 6px;
+  .loading-gem {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--aventurine);
+    border-radius: 10px; transform: rotate(15deg);
+    animation: gemPulse 1.5s ease-in-out infinite;
+    background: rgba(74,124,89,0.08);
   }
-
-  .loading-dots span {
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: bounce 1.2s ease infinite;
-  }
-
-  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
   .loading-text {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 1px;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 1.5px;
+    text-transform: uppercase;
   }
 
   /* Toast */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--accent);
-    color: #0A0A0F;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    z-index: 100;
-    transform: translateY(80px);
-    opacity: 0;
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--surface3); color: var(--text);
+    border: 1px solid var(--aventurine);
+    padding: 12px 20px; border-radius: 12px;
+    font-family: var(--mono); font-size: 12px;
+    z-index: 100; transform: translateY(80px); opacity: 0;
     transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   }
-
-  .toast.show {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  .toast.show { transform: translateY(0); opacity: 1; }
 
   /* Animations */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(18px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-    40% { transform: scale(1); opacity: 1; }
+  @keyframes gemPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(107,175,128,0.3); transform: rotate(15deg) scale(1); }
+    50% { box-shadow: 0 0 0 8px rgba(107,175,128,0); transform: rotate(15deg) scale(1.05); }
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    header { padding: 16px 20px; }
-    main { padding: 32px 20px; }
+  @media (max-width: 900px) {
+    header, main { padding-left: 24px; padding-right: 24px; }
     .mode-grid { grid-template-columns: repeat(3, 1fr); }
     .workspace { grid-template-columns: 1fr; }
   }
@@ -527,20 +591,22 @@
 
 <header>
   <div class="logo">
-    <div class="logo-icon">⚡</div>
-    <div class="logo-text">PM<span>Agent</span></div>
+    <div class="logo-mark"></div>
+    <div class="logo-name">Arc<span>spect</span></div>
   </div>
-  <div class="header-badge">powered by Claude</div>
+  <div class="header-right">
+    <div class="badge badge-ai">Built with Claude</div>
+  </div>
 </header>
 
 <main>
   <div class="hero">
-    <div class="hero-label">// AI Documentation Tool</div>
-    <h1>Ship specs,<br/>not <em>Jira tickets.</em></h1>
-    <p>Turn a one-line idea into a full PRD, user stories, acceptance criteria, metrics, and risk assessment — in seconds.</p>
+    <div class="hero-eyebrow">AI Product Documentation</div>
+    <h1>Great products<br/><em>start here.</em></h1>
+    <p class="hero-sub">Stop writing. Start shipping.</p>
   </div>
 
-  <div class="mode-grid" id="modeGrid">
+  <div class="mode-grid">
     <button class="mode-btn active" data-mode="prd" onclick="setMode('prd')">
       <span class="mode-icon">📋</span>
       <span class="mode-label">Full PRD</span>
@@ -564,374 +630,318 @@
   </div>
 
   <div class="workspace">
-    <!-- Input Panel -->
+
+    <!-- INPUT -->
     <div class="panel">
       <div class="panel-header">
-        <span class="panel-title">// input</span>
-        <div class="panel-dot active"></div>
-      </div>
-      <div class="context-label">Mode context</div>
-      <div class="mode-description" id="modeDescription">
-        Describe your product idea or feature in plain English. One sentence is enough.
-      </div>
-      <textarea id="inputText" placeholder="e.g. A feature that lets merchants bulk export their transaction history as a CSV file..."></textarea>
-      <div class="api-section">
-        <div class="api-label-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div class="api-label" style="margin-bottom:0">Anthropic API Key</div>
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-            <span style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.5px;">REMEMBER</span>
-            <div class="toggle" id="rememberToggle" onclick="toggleRemember()" style="width:32px;height:18px;background:var(--border);border-radius:20px;position:relative;transition:background 0.2s;cursor:pointer;">
-              <div id="toggleThumb" style="width:12px;height:12px;background:var(--muted);border-radius:50%;position:absolute;top:3px;left:3px;transition:all 0.2s;"></div>
-            </div>
-          </label>
+        <span class="panel-label">Input</span>
+        <div class="panel-status">
+          <div class="status-dot live"></div>
+          <span id="modeTag">PRD</span>
         </div>
-        <div class="api-row">
-          <input
-            type="password"
-            class="api-input"
-            id="apiKey"
-            placeholder="sk-ant-..."
-          />
-          <button class="generate-btn" id="generateBtn" onclick="generate()">
-            Generate ↗
-          </button>
+      </div>
+      <div class="input-body">
+        <div class="mode-hint" id="modeHint">Describe your product idea or feature. One sentence is enough to generate a full PRD.</div>
+        <div class="field-label">Your idea</div>
+        <textarea id="inputText" rows="6" placeholder="e.g. A feature that lets merchants set up automatic settlement schedules to their bank accounts..."></textarea>
+
+        <div class="context-section">
+          <div class="context-trigger" onclick="toggleContext()">
+            <div class="context-trigger-left">
+              <span class="context-trigger-label">Add context</span>
+              <span class="context-pill">richer output</span>
+            </div>
+            <span class="context-arrow" id="ctxArrow">▼</span>
+          </div>
+          <div class="context-inner" id="ctxInner">
+            <textarea class="context-field" id="contextText" rows="4" placeholder="Paste user research, business goals, technical constraints, competitive context, or any background that will make the output more accurate..."></textarea>
+            <div class="context-tip">Tip: the more context you add, the more precise and tailored your documentation will be.</div>
+          </div>
+        </div>
+
+        <div class="api-section">
+          <div class="api-header">
+            <span class="api-label">Anthropic API Key</span>
+            <div class="remember-control" onclick="toggleRemember()">
+              <span class="remember-text">Remember on this device</span>
+              <div class="toggle" id="rememberToggle">
+                <div class="toggle-thumb" id="toggleThumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="api-row">
+            <input type="password" class="api-input" id="apiKey" placeholder="sk-ant-..."/>
+            <button class="generate-btn" id="generateBtn" onclick="generate()">Generate →</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Output Panel -->
-    <div class="panel">
+    <!-- OUTPUT -->
+    <div class="panel output-panel">
       <div class="panel-header">
-        <span class="panel-title">// output</span>
-        <div class="panel-dot" id="outputDot"></div>
-      </div>
-      <div class="output-area" id="outputArea">
-        <div class="output-empty">
-          <div class="empty-icon">◎</div>
-          <p>Your generated documentation will appear here.</p>
+        <span class="panel-label">Output</span>
+        <div class="panel-status">
+          <div class="status-dot" id="outputDot"></div>
+          <span id="outputStatus">Waiting</span>
         </div>
       </div>
+      <div class="output-toolbar">
+        <button class="toolbar-btn active" id="viewBtn" onclick="setView('rendered')" disabled>Preview</button>
+        <button class="toolbar-btn" id="editBtn" onclick="setView('edit')" disabled>Edit</button>
+        <div class="toolbar-sep"></div>
+        <span class="word-count" id="wordCount"></span>
+      </div>
+      <div class="output-scroll" id="outputScroll">
+        <div class="output-empty">
+          <div class="empty-gem">◈</div>
+          <div class="empty-text">Your documentation will appear here after generation.</div>
+        </div>
+      </div>
+      <textarea class="output-editable" id="outputEditable"></textarea>
       <div class="output-actions">
-        <button class="action-btn" id="copyBtn" onclick="copyOutput()" disabled>copy to clipboard</button>
-        <button class="action-btn" id="downloadBtn" onclick="downloadOutput()" disabled>download .md</button>
+        <button class="act-btn" id="copyBtn" onclick="copyOutput()" disabled>Copy</button>
+        <button class="act-btn" id="dlBtn" onclick="downloadOutput()" disabled>Download .md</button>
+        <button class="act-btn act-btn-clear" id="clearBtn" onclick="clearOutput()" disabled>Clear</button>
       </div>
     </div>
+
   </div>
 </main>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  // Remember API key
-  let rememberKey = false;
+  // ── State ────────────────────────────────────────────────────────
+  let ctxOpen = false, rememberKey = false, currentView = 'rendered';
+  let currentMode = 'prd', currentOutput = '';
 
+  // ── Context ──────────────────────────────────────────────────────
+  function toggleContext() {
+    ctxOpen = !ctxOpen;
+    document.getElementById('ctxInner').classList.toggle('open', ctxOpen);
+    document.getElementById('ctxArrow').classList.toggle('open', ctxOpen);
+  }
+
+  // ── Remember ─────────────────────────────────────────────────────
   function initRemember() {
-    const saved = localStorage.getItem('pm_agent_remember');
-    const savedKey = localStorage.getItem('pm_agent_key');
-    if (saved === 'true' && savedKey) {
-      rememberKey = true;
-      document.getElementById('apiKey').value = savedKey;
-      setToggleState(true);
+    if (localStorage.getItem('arc_remember') === 'true') {
+      const k = localStorage.getItem('arc_key');
+      if (k) { rememberKey = true; document.getElementById('apiKey').value = k; setToggle(true); }
     }
   }
 
   function toggleRemember() {
     rememberKey = !rememberKey;
-    setToggleState(rememberKey);
+    setToggle(rememberKey);
     if (rememberKey) {
-      const key = document.getElementById('apiKey').value.trim();
-      if (key) {
-        localStorage.setItem('pm_agent_key', key);
-        localStorage.setItem('pm_agent_remember', 'true');
-        showToast('✓ Key saved to this device');
-      } else {
-        showToast('⚠️ Add your key first, then enable remember');
-        rememberKey = false;
-        setToggleState(false);
-      }
+      const k = document.getElementById('apiKey').value.trim();
+      if (k) { localStorage.setItem('arc_key', k); localStorage.setItem('arc_remember', 'true'); toast('✓ Key saved to this device'); }
+      else { toast('⚠ Paste your key first'); rememberKey = false; setToggle(false); }
+    } else { localStorage.removeItem('arc_key'); localStorage.removeItem('arc_remember'); toast('Key removed'); }
+  }
+
+  function setToggle(on) {
+    document.getElementById('rememberToggle').style.background = on ? 'var(--aventurine)' : 'var(--border2)';
+    const t = document.getElementById('toggleThumb');
+    t.style.background = on ? 'var(--bg)' : 'var(--muted)';
+    t.style.left = on ? '17px' : '3px';
+  }
+
+  // ── View ─────────────────────────────────────────────────────────
+  function setView(v) {
+    currentView = v;
+    const scroll = document.getElementById('outputScroll');
+    const editable = document.getElementById('outputEditable');
+    if (v === 'rendered') {
+      currentOutput = editable.value;
+      const r = scroll.querySelector('.output-rendered');
+      if (r) r.innerHTML = md(currentOutput);
+      scroll.style.display = 'block'; editable.style.display = 'none';
+      document.getElementById('viewBtn').classList.add('active');
+      document.getElementById('editBtn').classList.remove('active');
     } else {
-      localStorage.removeItem('pm_agent_key');
-      localStorage.removeItem('pm_agent_remember');
-      showToast('Key removed from device');
+      editable.value = currentOutput;
+      scroll.style.display = 'none'; editable.style.display = 'block';
+      document.getElementById('editBtn').classList.add('active');
+      document.getElementById('viewBtn').classList.remove('active');
     }
   }
 
-  function setToggleState(on) {
-    const toggle = document.getElementById('rememberToggle');
-    const thumb = document.getElementById('toggleThumb');
-    toggle.style.background = on ? 'var(--accent)' : 'var(--border)';
-    thumb.style.background = on ? '#0A0A0F' : 'var(--muted)';
-    thumb.style.left = on ? '17px' : '3px';
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    initRemember();
-    document.getElementById('apiKey').addEventListener('input', () => {
-      if (rememberKey) {
-        localStorage.setItem('pm_agent_key', document.getElementById('apiKey').value);
-      }
-    });
-  });
+  // ── Modes ─────────────────────────────────────────────────────────
+  const modeTags = { prd: 'PRD', stories: 'Stories', criteria: 'Criteria', metrics: 'Metrics', risks: 'Risks' };
 
   const modes = {
     prd: {
-      description: "Describe your product idea or feature in plain English. One sentence is enough to generate a full PRD.",
-      placeholder: "e.g. A feature that lets merchants bulk export their transaction history as a CSV file...",
-      prompt: (input) => `You are a senior product manager. Generate a comprehensive, well-structured PRD in markdown format for the following product idea:
-
-"${input}"
-
-Include these sections:
-## Problem Statement
-## Goals
-## Non-Goals (v1)
-## User Personas
-## Proposed Solution
-## Key Features
-## User Flow
-## Success Metrics
-## Risks & Assumptions
-## Open Questions
-
-Be specific, practical, and concise. Use bullet points where appropriate. Write as if this will be handed directly to an engineering team.`
+      hint: "Describe your product idea or feature. One sentence is enough to generate a full PRD.",
+      placeholder: "e.g. A feature that lets merchants set up automatic settlement schedules to their bank accounts on a daily, weekly, or custom frequency...",
+      prompt: (i, c) => `You are a senior product manager. Generate a comprehensive PRD in markdown for:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\n## Problem Statement\n## Goals\n## Non-Goals (v1)\n## User Personas\n## Proposed Solution\n## Key Features\n## User Flow\n## Success Metrics\n## Risks & Assumptions\n## Open Questions\n\nBe specific and practical. Write as if handing directly to an engineering team.`
     },
     stories: {
-      description: "Describe an epic or high-level feature. Get back a set of properly formatted user stories ready for your backlog.",
-      placeholder: "e.g. Bulk transfer feature for merchants to pay multiple recipients at once...",
-      prompt: (input) => `You are a senior product manager. Break down the following epic or feature into a comprehensive set of user stories in markdown format:
-
-"${input}"
-
-Format each story as:
-**Story [number]: [Short title]**
-As a [user type], I want to [action], so that [outcome].
-
-**Acceptance Criteria:**
-- [ ] Given [context], when [action], then [result]
-
-Cover the happy path, edge cases, and error states. Group stories logically. Aim for 5-8 stories.`
+      hint: "Describe an epic or feature. Get properly formatted user stories ready for your backlog.",
+      placeholder: "e.g. Bulk transfer feature that lets merchants pay multiple recipients in one operation...",
+      prompt: (i, c) => `You are a senior product manager. Break down this epic into user stories in markdown:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\nFormat: **Story [n]: [Title]**\nAs a [user], I want [action], so that [outcome].\n\n**Acceptance Criteria:**\n- [ ] Given... When... Then...\n\nCover happy path, edge cases, errors. Aim for 5–8 stories.`
     },
     criteria: {
-      description: "Paste a user story or feature description. Get back detailed acceptance criteria covering happy path, edge cases, and failure states.",
-      placeholder: "e.g. As a merchant, I want to filter my transaction history by date range, so that I can reconcile my accounts...",
-      prompt: (input) => `You are a senior product manager. Write detailed acceptance criteria in markdown format for the following user story or feature:
-
-"${input}"
-
-Structure your response as:
-
-## Acceptance Criteria
-
-### Happy Path
-- [ ] Given... When... Then...
-
-### Edge Cases
-- [ ] Given... When... Then...
-
-### Error States & Failure Handling
-- [ ] Given... When... Then...
-
-### Non-functional Requirements
-- [ ] Performance, security, accessibility considerations
-
-Be thorough and specific. Think like a QA engineer.`
+      hint: "Paste a user story or feature. Get detailed acceptance criteria covering all cases.",
+      placeholder: "e.g. As a merchant, I want to filter my transaction history by date range so I can reconcile accounts...",
+      prompt: (i, c) => `You are a senior product manager. Write detailed acceptance criteria in markdown for:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\n## Acceptance Criteria\n### Happy Path\n- [ ] Given... When... Then...\n### Edge Cases\n- [ ] Given... When... Then...\n### Error States\n- [ ] Given... When... Then...\n### Non-functional Requirements\n- [ ] Performance, security, accessibility\n\nThink like a QA engineer.`
     },
     metrics: {
-      description: "Describe a feature or product goal. Get back leading and lagging metrics with clear measurement guidance.",
-      placeholder: "e.g. We want to increase merchant activation rate after sign-up...",
-      prompt: (input) => `You are a senior product manager with expertise in product analytics. Suggest a comprehensive set of success metrics in markdown format for the following feature or goal:
-
-"${input}"
-
-Structure your response as:
-
-## Success Metrics
-
-### Primary Metric (North Star)
-What single number best captures success?
-
-### Leading Indicators
-Metrics that predict success early
-
-### Lagging Indicators
-Metrics that confirm success over time
-
-### Guardrail Metrics
-What must NOT get worse?
-
-### How to Measure
-Data sources, tracking approach, and measurement cadence
-
-### Targets & Benchmarks
-Suggested baseline and success thresholds
-
-Be specific and practical. Avoid vanity metrics.`
+      hint: "Describe a feature or goal. Get leading and lagging metrics with measurement guidance.",
+      placeholder: "e.g. Increase merchant activation rate in the first 7 days after sign-up...",
+      prompt: (i, c) => `You are a senior PM with analytics expertise. Suggest success metrics in markdown for:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\n## Success Metrics\n### Primary Metric (North Star)\n### Leading Indicators\n### Lagging Indicators\n### Guardrail Metrics\n### How to Measure\n### Targets & Benchmarks\n\nBe specific. No vanity metrics.`
     },
     risks: {
-      description: "Describe a feature or product idea. Get back a structured risk and assumptions register ready for stakeholder review.",
-      placeholder: "e.g. Launching a new instant settlement feature for enterprise merchants...",
-      prompt: (input) => `You are a senior product manager. Generate a comprehensive risks and assumptions register in markdown format for the following feature or initiative:
-
-"${input}"
-
-Structure your response as:
-
-## Risks & Assumptions Register
-
-### Key Assumptions
-What must be true for this to succeed?
-
-### Technical Risks
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-
-### Business Risks
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-
-### User/Adoption Risks
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-
-### Regulatory & Compliance Risks
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-
-### Open Questions
-Questions that must be answered before proceeding
-
-Be honest and thorough. Surface the uncomfortable risks.`
+      hint: "Describe a feature or initiative. Get a structured risk register ready for stakeholder review.",
+      placeholder: "e.g. Launching an instant settlement feature for enterprise merchants processing over ₦1B daily...",
+      prompt: (i, c) => `You are a senior product manager. Generate a risks and assumptions register in markdown for:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\n## Risks & Assumptions Register\n### Key Assumptions\n### Technical Risks\n| Risk | Likelihood | Impact | Mitigation |\n|------|------------|--------|------------|\n### Business Risks\n| Risk | Likelihood | Impact | Mitigation |\n|------|------------|--------|------------|\n### User/Adoption Risks\n| Risk | Likelihood | Impact | Mitigation |\n|------|------------|--------|------------|\n### Regulatory & Compliance Risks\n| Risk | Likelihood | Impact | Mitigation |\n|------|------------|--------|------------|\n### Open Questions\n\nSurface the uncomfortable risks.`
     }
   };
 
-  let currentMode = 'prd';
-  let currentOutput = '';
-
   function setMode(mode) {
     currentMode = mode;
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.mode === mode);
-    });
-    const m = modes[mode];
-    document.getElementById('modeDescription').textContent = m.description;
-    document.getElementById('inputText').placeholder = m.placeholder;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    document.getElementById('modeHint').textContent = modes[mode].hint;
+    document.getElementById('inputText').placeholder = modes[mode].placeholder;
+    document.getElementById('modeTag').textContent = modeTags[mode];
   }
 
+  // ── Generate ──────────────────────────────────────────────────────
   async function generate() {
-    const apiKey = document.getElementById('apiKey').value.trim();
+    const key = document.getElementById('apiKey').value.trim();
     const input = document.getElementById('inputText').value.trim();
-
-    if (!apiKey) { showToast('⚠️ Add your API key first'); return; }
-    if (!input) { showToast('⚠️ Describe your feature first'); return; }
+    const ctx = document.getElementById('contextText').value.trim();
+    if (!key) { toast('⚠ Add your API key first'); return; }
+    if (!input) { toast('⚠ Describe your idea first'); return; }
 
     const btn = document.getElementById('generateBtn');
-    btn.disabled = true;
-    btn.textContent = 'Generating...';
+    btn.disabled = true; btn.textContent = 'Generating...';
 
-    document.getElementById('outputDot').classList.add('active');
-    document.getElementById('outputArea').innerHTML = `
-      <div class="loading">
-        <div class="loading-dots">
-          <span></span><span></span><span></span>
-        </div>
-        <div class="loading-text">generating documentation...</div>
-      </div>`;
+    const scroll = document.getElementById('outputScroll');
+    const editable = document.getElementById('outputEditable');
+    scroll.style.display = 'block'; editable.style.display = 'none';
+    document.getElementById('outputDot').classList.add('live');
+    document.getElementById('outputStatus').textContent = 'Generating';
 
-    document.getElementById('copyBtn').disabled = true;
-    document.getElementById('downloadBtn').disabled = true;
+    scroll.innerHTML = `<div class="loading"><div class="loading-gem"></div><div class="loading-text">crafting documentation</div></div>`;
+    ['copyBtn','dlBtn','clearBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = true);
 
     try {
-      const response = await fetch('/.netlify/functions/generate', {
+      const res = await fetch('/.netlify/functions/generate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey
-        },
-        body: JSON.stringify({
-          prompt: modes[currentMode].prompt(input),
-          model: 'claude-haiku-4-5-20251001'
-        })
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key },
+        body: JSON.stringify({ prompt: modes[currentMode].prompt(input, ctx), model: 'claude-haiku-4-5-20251001' })
       });
-
-      const data = await response.json();
-
+      const data = await res.json();
       if (data.error) {
-        document.getElementById('outputArea').innerHTML = `
-          <div class="output-empty">
-            <div class="empty-icon">⚠️</div>
-            <p style="color: var(--danger)">${data.error.message}</p>
-          </div>`;
+        scroll.innerHTML = `<div class="output-empty"><div class="empty-gem">!</div><div class="empty-text" style="color:var(--danger)">${data.error.message||'API error'}</div></div>`;
+        document.getElementById('outputStatus').textContent = 'Error';
         return;
       }
 
       currentOutput = data.content[0].text;
-      document.getElementById('outputArea').innerHTML =
-        `<div class="output-content">${renderMarkdown(currentOutput)}</div>`;
-      document.getElementById('copyBtn').disabled = false;
-      document.getElementById('downloadBtn').disabled = false;
-      showToast('✓ Documentation generated');
+      scroll.innerHTML = `<div class="output-rendered">${md(currentOutput)}</div>`;
+      editable.value = currentOutput;
 
-    } catch (err) {
-      document.getElementById('outputArea').innerHTML = `
-        <div class="output-empty">
-          <div class="empty-icon">⚠️</div>
-          <p style="color: var(--danger)">Something went wrong. Check your API key and try again.</p>
-        </div>`;
+      const words = currentOutput.split(/\s+/).filter(Boolean).length;
+      document.getElementById('wordCount').textContent = words + ' words';
+      document.getElementById('outputStatus').textContent = 'Ready';
+
+      ['copyBtn','dlBtn','clearBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = false);
+      currentView = 'rendered';
+      document.getElementById('viewBtn').classList.add('active');
+      document.getElementById('editBtn').classList.remove('active');
+
+      toast('✓ Documentation ready');
+      if (rememberKey) localStorage.setItem('arc_key', key);
+
+    } catch(err) {
+      scroll.innerHTML = `<div class="output-empty"><div class="empty-gem">!</div><div class="empty-text" style="color:var(--danger)">Something went wrong. Check your API key.</div></div>`;
+      document.getElementById('outputStatus').textContent = 'Error';
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Generate ↗';
+      btn.disabled = false; btn.textContent = 'Generate →';
     }
   }
 
-  function renderMarkdown(text) {
-    return text
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/^- \[ \] (.+)$/gm, '<li>☐ $1</li>')
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-      .replace(/^---$/gm, '<hr/>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/^(?!<[h|l|h])/gm, '')
-      .replace(/<\/li>\n<li>/g, '</li><li>')
-      .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+  // ── Markdown ──────────────────────────────────────────────────────
+  function md(text) {
+    const lines = text.split('\n');
+    let html = '', list = false, table = false, thead = false;
+    for (let line of lines) {
+      if (line.startsWith('|')) {
+        if (!table) { html += '<table>'; table = true; thead = true; }
+        if (/^[\|\s\-:]+$/.test(line)) { thead = false; continue; }
+        const cells = line.split('|').filter(c => c.trim());
+        const tag = thead ? 'th' : 'td';
+        html += '<tr>' + cells.map(c => `<${tag}>${inl(c.trim())}</${tag}>`).join('') + '</tr>';
+        continue;
+      } else if (table) { html += '</table>'; table = false; }
+      if (line.startsWith('### ')) { if (list) { html += '</ul>'; list = false; } html += `<h3>${inl(line.slice(4))}</h3>`; continue; }
+      if (line.startsWith('## ')) { if (list) { html += '</ul>'; list = false; } html += `<h2>${inl(line.slice(3))}</h2>`; continue; }
+      if (line.startsWith('# ')) { if (list) { html += '</ul>'; list = false; } html += `<h1>${inl(line.slice(2))}</h1>`; continue; }
+      if (/^---+$/.test(line)) { if (list) { html += '</ul>'; list = false; } html += '<hr/>'; continue; }
+      if (/^- \[ \] /.test(line)) { if (!list) { html += '<ul>'; list = true; } html += `<li><span class="cb">☐</span>${inl(line.slice(6))}</li>`; continue; }
+      if (/^- /.test(line)) { if (!list) { html += '<ul>'; list = true; } html += `<li>${inl(line.slice(2))}</li>`; continue; }
+      if (/^\d+\. /.test(line)) { if (!list) { html += '<ul>'; list = true; } html += `<li>${inl(line.replace(/^\d+\. /,''))}</li>`; continue; }
+      if (list) { html += '</ul>'; list = false; }
+      if (!line.trim()) continue;
+      html += `<p>${inl(line)}</p>`;
+    }
+    if (list) html += '</ul>';
+    if (table) html += '</table>';
+    return html;
   }
 
-  function copyOutput() {
-    if (!currentOutput) return;
-    navigator.clipboard.writeText(currentOutput);
-    showToast('✓ Copied to clipboard');
+  function inl(t) {
+    return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>');
   }
+
+  // ── Actions ───────────────────────────────────────────────────────
+  function latest() { if (currentView==='edit') currentOutput = document.getElementById('outputEditable').value; return currentOutput; }
+
+  function copyOutput() { const o = latest(); if (!o) return; navigator.clipboard.writeText(o); toast('✓ Copied'); }
 
   function downloadOutput() {
-    if (!currentOutput) return;
-    const modeNames = {
-      prd: 'PRD', stories: 'User-Stories',
-      criteria: 'Acceptance-Criteria', metrics: 'Success-Metrics', risks: 'Risks-Assumptions'
-    };
-    const filename = `PM-Agent-${modeNames[currentMode]}-${Date.now()}.md`;
-    const blob = new Blob([currentOutput], { type: 'text/markdown' });
+    const o = latest(); if (!o) return;
+    const n = { prd:'PRD', stories:'User-Stories', criteria:'Acceptance-Criteria', metrics:'Success-Metrics', risks:'Risks-Assumptions' };
+    const blob = new Blob([o], { type:'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
-    showToast('✓ Downloaded');
+    a.href = url; a.download = `Arcspect-${n[currentMode]}-${Date.now()}.md`; a.click();
+    URL.revokeObjectURL(url); toast('✓ Downloaded');
   }
 
-  function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+  function clearOutput() {
+    currentOutput = '';
+    const scroll = document.getElementById('outputScroll');
+    scroll.innerHTML = `<div class="output-empty"><div class="empty-gem">◈</div><div class="empty-text">Your documentation will appear here after generation.</div></div>`;
+    scroll.style.display = 'block';
+    document.getElementById('outputEditable').style.display = 'none';
+    document.getElementById('outputEditable').value = '';
+    document.getElementById('outputDot').classList.remove('live');
+    document.getElementById('outputStatus').textContent = 'Waiting';
+    document.getElementById('wordCount').textContent = '';
+    ['copyBtn','dlBtn','clearBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = true);
+    document.getElementById('viewBtn').classList.add('active');
+    document.getElementById('editBtn').classList.remove('active');
+    currentView = 'rendered';
   }
 
-  // Enter key to generate
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') generate();
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    initRemember();
+    document.getElementById('apiKey').addEventListener('input', () => {
+      if (rememberKey) localStorage.setItem('arc_key', document.getElementById('apiKey').value);
+    });
   });
+  document.addEventListener('keydown', e => { if ((e.metaKey||e.ctrlKey) && e.key==='Enter') generate(); });
 </script>
 </body>
 </html>
