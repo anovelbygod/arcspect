@@ -644,7 +644,8 @@
         <div class="mode-hint" id="modeHint">Describe your product idea or feature. One sentence is enough to generate a full PRD.</div>
         <div class="field-label">Your idea</div>
         <textarea id="inputText" rows="6" placeholder="e.g. A feature that lets merchants set up automatic settlement schedules to their bank accounts..."></textarea>
-
+        <div id="charCount" style="font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 0 20px 12px; letter-spacing: 1px; text-align: right;"></div>
+        ```
         <div class="context-section">
           <div class="context-trigger" onclick="toggleContext()">
             <div class="context-trigger-left">
@@ -655,6 +656,7 @@
           </div>
           <div class="context-inner" id="ctxInner">
             <textarea class="context-field" id="contextText" rows="4" placeholder="Paste user research, business goals, technical constraints, competitive context, or any background that will make the output more accurate..."></textarea>
+            <div id="ctxCount" style="font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 0 0 6px; letter-spacing: 1px; text-align: right;"></div>
             <div class="context-tip">Tip: the more context you add, the more precise and tailored your documentation will be.</div>
           </div>
         </div>
@@ -936,12 +938,24 @@
 
   // ── Init ──────────────────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
-    initRemember();
-    document.getElementById('apiKey').addEventListener('input', () => {
-      if (rememberKey) localStorage.setItem('arc_key', document.getElementById('apiKey').value);
-    });
+  initRemember();
+  document.getElementById('inputText').addEventListener('input', () => {
+    const count = document.getElementById('inputText').value.length;
+    const counter = document.getElementById('charCount');
+    counter.textContent = count > 0 ? count + ' / 500' : '';
+    counter.style.color = count > 400 ? 'var(--danger)' : 'var(--muted)';
   });
-  document.addEventListener('keydown', e => { if ((e.metaKey||e.ctrlKey) && e.key==='Enter') generate(); });
+  document.getElementById('contextText').addEventListener('input', () => {
+    const count = document.getElementById('contextText').value.length;
+    const counter = document.getElementById('ctxCount');
+    counter.textContent = count > 0 ? count + ' / 1000' : '';
+    counter.style.color = count > 800 ? 'var(--danger)' : 'var(--muted)';
+  });
+  document.getElementById('apiKey').addEventListener('input', () => {
+    if (rememberKey) localStorage.setItem('arc_key', document.getElementById('apiKey').value);
+  });
+});
+document.addEventListener('keydown', e => { if ((e.metaKey||e.ctrlKey) && e.key==='Enter') generate(); });
 </script>
 </body>
 </html>
