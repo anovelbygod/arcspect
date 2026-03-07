@@ -935,7 +935,23 @@
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
+// ── Button state ──────────────────────────────────────────────────
+function updateButtonState() {
+  const value = document.getElementById('inputText').value.trim();
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const btn = document.getElementById('generateBtn');
 
+  if (value.length === 0) {
+    btn.textContent = 'Write something first';
+    btn.style.opacity = '0.4';
+  } else if (value.length > 0 && apiKey.length === 0) {
+    btn.textContent = 'Add API key →';
+    btn.style.opacity = '0.6';
+  } else {
+    btn.textContent = 'Generate →';
+    btn.style.opacity = '1';
+  }
+}
   // ── Init ──────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   initRemember();
@@ -952,16 +968,7 @@ window.addEventListener('DOMContentLoaded', () => {
     counter.style.color = count > 400 ? 'var(--danger)' : 'var(--muted)';
 
     // Button state
-    if (value.length === 0) {
-      btn.textContent = 'Write something first';
-      btn.style.opacity = '0.4';
-    } else if (value.length > 0 && apiKey.length === 0) {
-      btn.textContent = 'Add API key →';
-      btn.style.opacity = '0.6';
-    } else {
-      btn.textContent = 'Generate →';
-      btn.style.opacity = '1';
-    }
+    updateButtonState();
   });
 
   document.getElementById('contextText').addEventListener('input', () => {
@@ -974,21 +981,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('apiKey').addEventListener('input', () => {
     if (rememberKey) localStorage.setItem('arc_key', document.getElementById('apiKey').value);
 
-    // Also update button state when API key changes
-    const value = document.getElementById('inputText').value.trim();
-    const apiKey = document.getElementById('apiKey').value.trim();
-    const btn = document.getElementById('generateBtn');
-
-    if (value.length === 0) {
-      btn.textContent = 'Write something first';
-      btn.style.opacity = '0.4';
-    } else if (apiKey.length === 0) {
-      btn.textContent = 'Add API key →';
-      btn.style.opacity = '0.6';
-    } else {
-      btn.textContent = 'Generate →';
-      btn.style.opacity = '1';
-    }
+    updateButtonState();
 });
 });
 
