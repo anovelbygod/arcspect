@@ -826,7 +826,7 @@
     document.getElementById('outputDot').classList.add('live');
     document.getElementById('outputStatus').textContent = 'Generating';
 
-    scroll.innerHTML = `<div class="loading"><div class="loading-gem"></div><div class="loading-text">crafting documentation</div></div>`;
+    scroll.innerHTML = `<div class="loading"><div class="loading-gem"></div><div class="loading-text">crafting ${modeTags[currentMode]}</div></div>`;
     outputBtns.forEach(id => document.getElementById(id).disabled = true);
 
     try {
