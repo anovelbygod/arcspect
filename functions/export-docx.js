@@ -1,109 +1,161 @@
-const {
-    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-    HeadingLevel, AlignmentType, BorderStyle, WidthType, ShadingType,
-    LevelFormat, PageNumberElement, Footer, Header
-  } = require('docx');
-  
-  exports.handler = async function(event) {
-    if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
-    try {
-      const { markdown, filename } = JSON.parse(event.body);
-      if (!markdown) return { statusCode: 400, body: JSON.stringify({ error: 'No markdown provided' }) };
-      const buffer = await buildDocx(markdown);
-      return {
-        statusCode: 200,
-        headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: buffer.toString('base64'), filename: filename || 'Arcspect-Export.docx' })
-      };
-    } catch (err) {
-      return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
-    }
-  };
-  
-  const FONT = 'Inter';
-  const FONT_FALLBACK = 'Calibri';
-  const F = `${FONT}, ${FONT_FALLBACK}`;
-  
-  function run(text, opts = {}) {
-    return new TextRun({
-      text,
-      font: F,
-      size: opts.size || 22,
-      bold: opts.bold || false,
-      italics: opts.italics || false,
-      color: opts.color || '2C2C2C'
-    });
+const PDFDocument = require('pdfkit');
+const fonts = require('./fonts.js');
+
+exports.handler = async function(event) {
+  if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
+  try {
+    const { markdown, filename } = JSON.parse(event.body);
+    if (!markdown) return { statusCode: 400, body: JSON.stringify({ error: 'No markdown provided' }) };
+    const buffer = await buildPDF(markdown);
+    return {
+      statusCode: 200,
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: buffer.toString('base64'), filename: filename || 'Arcspect-Export.pdf' })
+    };
+  } catch (err) {
+    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
-  
-  function inlineRuns(text, sz) {
-    sz = sz || 22;
-    const runs = [];
-    const regex = /\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`|([^*`]+)/g;
-    let m;
-    while ((m = regex.exec(text)) !== null) {
-      if (m[1] !== undefined) runs.push(run(m[1], { bold: true, size: sz }));
-      else if (m[2] !== undefined) runs.push(run(m[2], { italics: true, size: sz }));
-      else if (m[3] !== undefined) runs.push(new TextRun({ text: m[3], font: 'Courier New', size: sz - 2, color: '2E7D50' }));
-      else if (m[4] !== undefined && m[4]) runs.push(run(m[4], { size: sz }));
+};
+
+const C = {
+  green: '#4A7C59', text: '#1A1A1A', text2: '#444444',
+  muted: '#999999', border: '#E0E0E0', headerBg: '#F0F7F2',
+  rowAlt: '#F9FCF9', white: '#FFFFFF'
+};
+
+function cleanInline(text) {
+  return text
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+}
+
+function buildPDF(markdown) {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ margin: 0, size: 'A4', bufferPages: true, autoFirstPage: true });
+
+    doc.registerFont('Inter', fonts.regular);
+    doc.registerFont('Inter-Bold', fonts.bold);
+
+    const buffers = [];
+    doc.on('data', d => buffers.push(d));
+    doc.on('end', () => resolve(Buffer.concat(buffers)));
+    doc.on('error', reject);
+
+    const L = 56;
+    const R = 56;
+    const pageW = doc.page.width - L - R;
+    const pageBottom = doc.page.height - 48;
+
+    function drawHeader() {
+      doc.rect(0, 0, doc.page.width, 44).fill(C.green);
+      doc.font('Inter-Bold').fontSize(11).fillColor('#FFFFFF').text('ARCSPECT', L, 16);
+      doc.font('Inter').fontSize(9).fillColor('rgba(255,255,255,0.65)').text('AI Product Documentation', L + 82, 18);
     }
-    return runs.length ? runs : [run(text, { size: sz })];
-  }
-  
-  function parseMarkdown(markdown) {
+
+    function drawFooter(pageNum, total) {
+      const fy = doc.page.height - 28;
+      doc.moveTo(L, fy).lineTo(L + pageW, fy).strokeColor(C.border).lineWidth(0.5).stroke();
+      doc.font('Inter').fontSize(8).fillColor(C.muted)
+         .text('arcspect.netlify.app', L, fy + 8, { continued: true, width: pageW })
+         .text(`Page ${pageNum} of ${total}`, { align: 'right' });
+    }
+
+    drawHeader();
+    doc.y = 64;
+
     const lines = markdown.split('\n');
-    const children = [];
     let i = 0;
-  
+
+    function newPage() { doc.addPage(); drawHeader(); doc.y = 60; }
+    function ensureSpace(n) { if (doc.y + n > pageBottom) newPage(); }
+
+    function hRule(color, weight) {
+      doc.moveTo(L, doc.y).lineTo(L + pageW, doc.y)
+         .strokeColor(color || C.border).lineWidth(weight || 0.5).stroke();
+      doc.y += 6;
+    }
+
+    // ── Key fix: render bullet as absolute-positioned glyph + text block ──
+    function renderBullet(symbol, symbolColor, text, indent) {
+      indent = indent || 0;
+      const symbolW = 16;
+      const textX = L + indent + symbolW;
+      const textW = pageW - indent - symbolW;
+      const startY = doc.y;
+
+      // Draw symbol at fixed position
+      doc.font('Inter-Bold').fontSize(13).fillColor(symbolColor || C.green)
+         .text(symbol, L + indent, startY, { lineBreak: false });
+
+      // Draw text starting after symbol — use absolute x position
+      doc.font('Inter').fontSize(11).fillColor(C.text2)
+         .text(text, textX, startY, { width: textW });
+
+      // doc.y is now set by the text block above
+      doc.y += 2;
+    }
+
+    function renderNumbered(num, text) {
+      const numW = 22;
+      const textX = L + numW;
+      const textW = pageW - numW;
+      const startY = doc.y;
+
+      doc.font('Inter-Bold').fontSize(11).fillColor(C.muted)
+         .text(num + '.', L, startY, { lineBreak: false, width: numW });
+
+      doc.font('Inter').fontSize(11).fillColor(C.text2)
+         .text(text, textX, startY, { width: textW });
+
+      doc.y += 2;
+    }
+
     while (i < lines.length) {
       const line = lines[i];
-  
+
       // H1
       if (line.startsWith('# ')) {
-        children.push(new Paragraph({
-          heading: HeadingLevel.HEADING_1,
-          children: [run(line.slice(2).trim(), { bold: true, size: 44, color: '1A1A1A' })],
-          spacing: { before: 480, after: 240 },
-          border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: '4A7C59', space: 4 } }
-        }));
+        ensureSpace(72);
+        doc.y += 8;
+        doc.font('Inter-Bold').fontSize(22).fillColor(C.text)
+           .text(line.slice(2).trim(), L, doc.y, { width: pageW });
+        doc.y += 4;
+        hRule(C.green, 2);
+        doc.y += 6;
         i++; continue;
       }
-  
+
       // H2
       if (line.startsWith('## ') && !line.startsWith('### ')) {
-        children.push(new Paragraph({
-          heading: HeadingLevel.HEADING_2,
-          children: [run(line.slice(3).trim().toUpperCase(), { bold: true, size: 18, color: '4A7C59' })],
-          spacing: { before: 400, after: 80 }
-        }));
-        // Thin rule after H2
-        children.push(new Paragraph({
-          children: [run('')],
-          border: { bottom: { style: BorderStyle.SINGLE, size: 2, color: 'DDDDDD', space: 1 } },
-          spacing: { before: 0, after: 100 }
-        }));
+        ensureSpace(52);
+        doc.y += 18;
+        doc.font('Inter-Bold').fontSize(8).fillColor(C.green)
+           .text(line.slice(3).trim().toUpperCase(), L, doc.y, { width: pageW, characterSpacing: 1.6 });
+        doc.y += 5;
+        hRule('#DDDDDD', 0.5);
+        doc.y += 2;
         i++; continue;
       }
-  
+
       // H3
-      if (line.startsWith('### ')) {
-        children.push(new Paragraph({
-          heading: HeadingLevel.HEADING_3,
-          children: [run(line.slice(4).trim(), { bold: true, size: 24, color: '1A1A1A' })],
-          spacing: { before: 280, after: 80 }
-        }));
+      if (line.startsWith('### ') || line.startsWith('#### ')) {
+        ensureSpace(32);
+        doc.y += 8;
+        const text = line.startsWith('#### ') ? line.slice(5).trim() : line.slice(4).trim();
+        doc.font('Inter-Bold').fontSize(12).fillColor(C.text)
+           .text(text, L, doc.y, { width: pageW });
+        doc.y += 4;
         i++; continue;
       }
-  
+
       // HR
       if (/^---+$/.test(line.trim())) {
-        children.push(new Paragraph({
-          children: [run('')],
-          border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'CCCCCC', space: 1 } },
-          spacing: { before: 160, after: 160 }
-        }));
+        doc.y += 10; hRule(C.border, 0.5); doc.y += 10;
         i++; continue;
       }
-  
+
       // Table
       if (line.trim().startsWith('|')) {
         const tableLines = [];
@@ -112,148 +164,95 @@ const {
           i++;
         }
         if (!tableLines.length) continue;
-  
+
         const parseRow = r => r.split('|').map(c => c.trim()).filter(Boolean);
         const headers = parseRow(tableLines[0]);
-        const colCount = headers.length;
-        const colWidth = Math.floor(9360 / colCount);
-        const border = { style: BorderStyle.SINGLE, size: 4, color: 'DDDDDD' };
-        const borders = { top: border, bottom: border, left: border, right: border };
-  
-        const rows = [
-          new TableRow({
-            tableHeader: true,
-            children: headers.map(h => new TableCell({
-              borders,
-              width: { size: colWidth, type: WidthType.DXA },
-              shading: { fill: 'E8F4EC', type: ShadingType.CLEAR },
-              margins: { top: 100, bottom: 100, left: 140, right: 140 },
-              children: [new Paragraph({
-                children: [run(h.toUpperCase(), { bold: true, size: 18, color: '2E7D50' })]
-              })]
-            }))
-          })
-        ];
-  
+        const colW = Math.floor(pageW / headers.length);
+        const hRowH = 24, dRowH = 20;
+
+        ensureSpace(hRowH + Math.min(tableLines.length - 1, 4) * dRowH + 16);
+        doc.y += 8;
+        const sy = doc.y;
+
+        headers.forEach((h, ci) => {
+          const x = L + ci * colW;
+          doc.rect(x, sy, colW, hRowH).fill(C.headerBg);
+          doc.rect(x, sy, colW, hRowH).strokeColor(C.border).lineWidth(0.5).stroke();
+          doc.font('Inter-Bold').fontSize(8).fillColor(C.green)
+             .text(h.toUpperCase(), x + 8, sy + 8, { width: colW - 16, ellipsis: true, lineBreak: false });
+        });
+        doc.y = sy + hRowH;
+
         for (let r = 1; r < tableLines.length; r++) {
           const cells = parseRow(tableLines[r]);
-          rows.push(new TableRow({
-            children: Array.from({ length: colCount }, (_, ci) => new TableCell({
-              borders,
-              width: { size: colWidth, type: WidthType.DXA },
-              shading: { fill: r % 2 === 0 ? 'F9FCF9' : 'FFFFFF', type: ShadingType.CLEAR },
-              margins: { top: 80, bottom: 80, left: 140, right: 140 },
-              children: [new Paragraph({ children: inlineRuns(cells[ci] || '', 20) })]
-            }))
-          }));
+          if (doc.y + dRowH > pageBottom) newPage();
+          const ry = doc.y;
+          headers.forEach((_, ci) => {
+            const x = L + ci * colW;
+            doc.rect(x, ry, colW, dRowH).fill(r % 2 === 0 ? C.rowAlt : C.white);
+            doc.rect(x, ry, colW, dRowH).strokeColor(C.border).lineWidth(0.5).stroke();
+            doc.font('Inter').fontSize(9).fillColor(C.text2)
+               .text(cleanInline(cells[ci] || ''), x + 8, ry + 6, { width: colW - 16, ellipsis: true, lineBreak: false });
+          });
+          doc.y = ry + dRowH;
         }
-  
-        children.push(new Table({
-          width: { size: 9360, type: WidthType.DXA },
-          columnWidths: Array(colCount).fill(colWidth),
-          rows
-        }));
-        children.push(new Paragraph({ children: [run('')], spacing: { after: 140 } }));
+        doc.y += 14;
         continue;
       }
-  
+
       // Checkbox
       if (/^- \[[ x]\] /.test(line)) {
+        ensureSpace(22);
         const checked = line[3] === 'x';
-        children.push(new Paragraph({
-          numbering: { reference: 'bullets', level: 0 },
-          children: [
-            run((checked ? '☑' : '☐') + ' ', { bold: true, size: 22, color: '4A7C59' }),
-            ...inlineRuns(line.slice(6).trim())
-          ],
-          spacing: { before: 40, after: 40 }
-        }));
+        renderBullet(checked ? '☑' : '☐', C.green, cleanInline(line.slice(6).trim()));
         i++; continue;
       }
-  
+
       // Bullet
       if (/^- /.test(line)) {
-        children.push(new Paragraph({
-          numbering: { reference: 'bullets', level: 0 },
-          children: inlineRuns(line.slice(2).trim()),
-          spacing: { before: 40, after: 40 }
-        }));
+        ensureSpace(22);
+        renderBullet('•', C.green, cleanInline(line.slice(2).trim()));
         i++; continue;
       }
-  
+
       // Numbered list
       if (/^\d+\. /.test(line)) {
-        children.push(new Paragraph({
-          numbering: { reference: 'numbers', level: 0 },
-          children: inlineRuns(line.replace(/^\d+\. /, '').trim()),
-          spacing: { before: 40, after: 40 }
-        }));
+        ensureSpace(22);
+        const num = line.match(/^(\d+)\./)[1];
+        renderNumbered(num, cleanInline(line.replace(/^\d+\. /, '').trim()));
         i++; continue;
       }
-  
+
       // Empty line
-      if (!line.trim()) {
-        children.push(new Paragraph({ children: [run('')], spacing: { after: 80 } }));
-        i++; continue;
+      if (!line.trim()) { doc.y += 6; i++; continue; }
+
+      // Paragraph — bold:value pattern
+      ensureSpace(22);
+      const boldMatch = line.trim().match(/^\*\*([^*]+)\*\*[:\s]\s*(.*)/);
+      if (boldMatch) {
+        const label = boldMatch[1] + ': ';
+        const rest = cleanInline(boldMatch[2]);
+        const labelW = doc.font('Inter-Bold').fontSize(11).widthOfString(label);
+        const startY = doc.y;
+        doc.font('Inter-Bold').fontSize(11).fillColor(C.text)
+           .text(label, L, startY, { lineBreak: false });
+        doc.font('Inter').fontSize(11).fillColor(C.text2)
+           .text(rest, L + labelW, startY, { width: pageW - labelW });
+      } else {
+        doc.font('Inter').fontSize(11).fillColor(C.text2)
+           .text(cleanInline(line.trim()), L, doc.y, { width: pageW });
       }
-  
-      // Paragraph
-      children.push(new Paragraph({
-        children: inlineRuns(line.trim()),
-        spacing: { before: 40, after: 80 }
-      }));
+      doc.y += 4;
       i++;
     }
-  
-    return children;
-  }
-  
-  async function buildDocx(markdown) {
-    const doc = new Document({
-      numbering: {
-        config: [
-          { reference: 'bullets', levels: [{ level: 0, format: LevelFormat.BULLET, text: '•', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } }, run: { font: F } } }] },
-          { reference: 'numbers', levels: [{ level: 0, format: LevelFormat.DECIMAL, text: '%1.', alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } }, run: { color: '999999', font: F } } }] }
-        ]
-      },
-      styles: {
-        default: { document: { run: { font: F, size: 22, color: '2C2C2C' } } },
-        paragraphStyles: [
-          { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 44, bold: true, font: F, color: '1A1A1A' }, paragraph: { spacing: { before: 480, after: 240 }, outlineLevel: 0 } },
-          { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 18, bold: true, font: F, color: '4A7C59' }, paragraph: { spacing: { before: 400, after: 80 }, outlineLevel: 1 } },
-          { id: 'Heading3', name: 'Heading 3', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { size: 24, bold: true, font: F, color: '1A1A1A' }, paragraph: { spacing: { before: 280, after: 80 }, outlineLevel: 2 } }
-        ]
-      },
-      sections: [{
-        properties: {
-          page: { size: { width: 12240, height: 15840 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } }
-        },
-        headers: {
-          default: new Header({
-            children: [new Paragraph({
-              children: [
-                run('ARCSPECT', { bold: true, size: 18, color: '4A7C59' }),
-                run('   ·   AI Product Documentation', { size: 18, color: 'AAAAAA' })
-              ],
-              border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'E0E0E0', space: 4 } }
-            })]
-          })
-        },
-        footers: {
-          default: new Footer({
-            children: [new Paragraph({
-              children: [
-                run('arcspect.netlify.app   ·   Page ', { size: 16, color: 'AAAAAA' }),
-                new PageNumberElement()
-              ],
-              alignment: AlignmentType.RIGHT,
-              border: { top: { style: BorderStyle.SINGLE, size: 4, color: 'E0E0E0', space: 4 } }
-            })]
-          })
-        },
-        children: parseMarkdown(markdown)
-      }]
-    });
-  
-    return await Packer.toBuffer(doc);
-  }
+
+    // Footers
+    const range = doc.bufferedPageRange();
+    for (let p = 0; p < range.count; p++) {
+      doc.switchToPage(range.start + p);
+      drawFooter(p + 1, range.count);
+    }
+
+    doc.end();
+  });
+}
