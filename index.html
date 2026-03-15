@@ -1691,8 +1691,10 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
 
   function updateModalBtn() {
     const count = Object.values(modalSelections).filter(Boolean).length;
-    document.getElementById('modalCount').textContent = count;
-    document.getElementById('modalDownloadBtn').disabled = count === 0;
+    const countEl = document.getElementById('modalCount');
+    const dlBtn = document.getElementById('modalDownloadBtn');
+    if (countEl) countEl.textContent = count;
+    if (dlBtn) dlBtn.disabled = count === 0;
   }
 
   function selectFormat(fmt) {
