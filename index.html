@@ -1473,12 +1473,12 @@
     stories: {
       hint: "Describe an epic or feature. Get properly formatted user stories ready for your backlog.",
       placeholder: "e.g. Bulk transfer feature that lets merchants pay multiple recipients in one operation...",
-      prompt: (i, c) => `You are a senior product manager. Break down this epic into user stories in markdown:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\nFormat: **Story [n]: [Title]**\nAs a [user], I want [action], so that [outcome].\n\n**Acceptance Criteria:**\n- [ ] Given... When... Then...\n\nCover happy path, edge cases, errors. Aim for 5–8 stories.`
+      prompt: (i, c) => `You are a senior product manager. Break down this epic into user stories in markdown:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\nFormat: **Story [n]: [Title]**\nAs a [user], I want [action], so that [outcome].\n\n**Acceptance Criteria:**\n- [ ] Given... When... Then...\n\nEach acceptance criterion must be a single self-contained - [ ] checkbox line. Do not use nested dashes or sub-bullets — fold all detail into the single line. Cover happy path, edge cases, errors. Aim for 5–8 stories.`
     },
     criteria: {
       hint: "Paste a user story or feature. Get detailed acceptance criteria covering all cases.",
       placeholder: "e.g. As a merchant, I want to filter my transaction history by date range so I can reconcile accounts...",
-      prompt: (i, c) => `You are a senior product manager. Write detailed acceptance criteria in markdown for:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\n## Acceptance Criteria\n### Happy Path\n- [ ] Given... When... Then...\n### Edge Cases\n- [ ] Given... When... Then...\n### Error States\n- [ ] Given... When... Then...\n### Non-functional Requirements\n- [ ] Performance, security, accessibility\n\nThink like a QA engineer.`
+      prompt: (i, c) => `You are a senior product manager. Write detailed acceptance criteria in markdown for:\n\n"${i}"\n${c?`\n**Context:**\n${c}\n`:''}\n## Acceptance Criteria\n### Happy Path\n- [ ] Given... When... Then...\n### Edge Cases\n- [ ] Given... When... Then...\n### Error States\n- [ ] Given... When... Then...\n### Non-functional Requirements\n- [ ] Performance, security, accessibility\n\nIMPORTANT: Every acceptance criterion must be a single self-contained - [ ] checkbox line in Given/When/Then format. Do not use nested dashes or sub-bullets under any checkbox item — fold all detail into the single line. Think like a QA engineer.`
     },
     metrics: {
       hint: "Describe a feature or goal. Get leading and lagging metrics with measurement guidance.",
