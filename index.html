@@ -632,10 +632,33 @@
   .mcs-pending { color: var(--muted); opacity: 0.6; }
 
   .modal-footer {
-    padding: 14px 24px; border-top: 1px solid var(--border);
-    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 16px 24px; border-top: 1px solid var(--border);
     background: var(--surface2);
   }
+  .modal-format-label {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--muted); letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .modal-format-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 14px;
+  }
+  .fmt-card {
+    padding: 10px 8px; border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--surface); text-align: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .fmt-card:hover { border-color: var(--aventurine); }
+  .fmt-card.fmt-selected { border-color: var(--aventurine-light); background: rgba(74,124,89,0.08); }
+  .fmt-ext {
+    display: block; font-family: var(--mono); font-size: 13px;
+    font-weight: 500; color: var(--text2); margin-bottom: 2px;
+  }
+  .fmt-card.fmt-selected .fmt-ext { color: var(--aventurine-light); }
+  .fmt-desc { font-size: 10px; color: var(--muted); }
+  .modal-footer-actions { display: flex; gap: 8px; justify-content: flex-end; }
   .modal-cancel {
     background: transparent; border: 1px solid var(--border2); border-radius: 10px;
     padding: 9px 18px; color: var(--muted);
@@ -1051,13 +1074,23 @@
       </div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer">
-        <button class="modal-cancel" onclick="closeBriefModal()">Cancel</button>
-        <div style="display:flex; gap:8px; align-items:center;">
-          <select id="briefFormat" style="background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:8px 12px; color:var(--text2); font-family:var(--mono); font-size:11px; outline:none; cursor:pointer;">
-            <option value="md">.md — Markdown</option>
-            <option value="docx">.docx — Word</option>
-            <option value="pdf">.pdf — PDF</option>
-          </select>
+        <div class="modal-format-label">Export format</div>
+        <div class="modal-format-grid">
+          <div class="fmt-card" data-fmt="md" onclick="selectFormat('md')">
+            <span class="fmt-ext">.md</span>
+            <span class="fmt-desc">Markdown</span>
+          </div>
+          <div class="fmt-card fmt-selected" data-fmt="docx" onclick="selectFormat('docx')">
+            <span class="fmt-ext">.docx</span>
+            <span class="fmt-desc">Word doc</span>
+          </div>
+          <div class="fmt-card" data-fmt="pdf" onclick="selectFormat('pdf')">
+            <span class="fmt-ext">.pdf</span>
+            <span class="fmt-desc">PDF</span>
+          </div>
+        </div>
+        <div class="modal-footer-actions">
+          <button class="modal-cancel" onclick="closeBriefModal()">Cancel</button>
           <button class="modal-download" id="modalDownloadBtn" onclick="downloadBrief()">Download <span id="modalCount">0</span> sections →</button>
         </div>
       </div>
@@ -1662,6 +1695,10 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
     document.getElementById('modalDownloadBtn').disabled = count === 0;
   }
 
+  function selectFormat(fmt) {
+    document.querySelectorAll('.fmt-card').forEach(c => c.classList.toggle('fmt-selected', c.dataset.fmt === fmt));
+  }
+
   function closeBriefModal() { document.getElementById('briefModal').classList.remove('open'); }
 
   function closeBriefModalOutside(e) { if (e.target === document.getElementById('briefModal')) closeBriefModal(); }
@@ -1674,7 +1711,9 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
     });
     if (!sections.length) return;
     const combined = sections.join('\n\n---\n\n');
-    const format = document.getElementById('briefFormat').value;
+    const format = document.getElementById('briefFormat') 
+      ? document.getElementById('briefFormat').value 
+      : (document.querySelector('.fmt-card.fmt-selected') || {}).dataset?.fmt || 'docx';
     const count = sections.length;
 
     if (format === 'md') {
