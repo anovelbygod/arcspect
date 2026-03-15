@@ -223,13 +223,23 @@ function buildPDF(markdown) {
       if (boldMatch) {
         const label = boldMatch[1] + ': ';
         const rest = clean(boldMatch[2]);
-        doc.font('Inter-Bold').fontSize(11).fillColor(C.text)
-           .text(label, L, doc.y, { continued: true, width: W });
-        doc.font('Inter').fillColor(C.text2).text(rest);
+        if (rest) {
+          // Label + text on same line — render as one paragraph, bold label then normal text
+          const startY = doc.y;
+          const labelW = doc.font('Inter-Bold').fontSize(11).widthOfString(label);
+          doc.font('Inter-Bold').fontSize(11).fillColor(C.text)
+             .text(label, L, startY, { lineBreak: false });
+          doc.font('Inter').fontSize(11).fillColor(C.text2)
+             .text(rest, L + labelW, startY, { width: W - labelW });
+        } else {
+          // Label only — standalone bold heading
+          doc.font('Inter-Bold').fontSize(11).fillColor(C.text)
+             .text(label, L, doc.y, { width: W });
+        }
       } else {
         doc.font('Inter').fontSize(11).fillColor(C.text2).text(clean(line.trim()), L, doc.y, { width: W });
       }
-      doc.y += 4;
+      doc.y += 6;
     }
 
     // Add footers
