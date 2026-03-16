@@ -539,31 +539,28 @@
 
   /* Output actions */
   .output-actions {
-    padding: 14px 20px;
+    padding: 10px 20px;
     border-top: 1px solid var(--border);
-    display: flex; gap: 8px; align-items: center;
-    background: var(--surface2);
+    display: flex; gap: 6px; align-items: center;
+    background: var(--surface2); flex-wrap: nowrap;
   }
 
   .act-btn {
     background: transparent;
     border: 1px solid var(--border2); border-radius: 8px;
-    padding: 8px 16px; color: var(--muted);
+    padding: 6px 12px; color: var(--muted);
     font-family: var(--mono); font-size: 10px;
-    cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
+    white-space: nowrap; display: flex; align-items: center; gap: 5px;
   }
   .act-btn:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
   .act-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-  .act-btn-clear {
-    margin-left: auto;
-    color: var(--muted);
-  }
-  .act-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+  .act-sep { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
+  .act-spacer { flex: 1; }
 
   /* Full brief download btn */
   .act-btn-brief {
-    margin-left: auto;
     color: var(--gold);
     border-color: rgba(201,168,76,0.3);
     background: rgba(201,168,76,0.05);
@@ -575,7 +572,7 @@
   .brief-count {
     font-family: var(--mono); font-size: 9px;
     background: var(--gold); color: var(--bg);
-    border-radius: 10px; padding: 1px 6px; font-weight: 600;
+    border-radius: 8px; padding: 1px 5px; font-weight: 600;
   }
 
   /* Mode status tabs inside output panel */
@@ -710,72 +707,72 @@
 
   .upload-zone {
     margin: 0 20px 14px;
-    border: 1.5px dashed var(--border2);
-    border-radius: 12px; padding: 18px;
-    text-align: center; cursor: pointer;
-    transition: all 0.25s;
+    border: 1px dashed var(--border2);
+    border-radius: 8px; padding: 9px 14px;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 10px;
   }
   .upload-zone:hover { border-color: var(--aventurine); background: rgba(74,124,89,0.03); }
   .upload-zone.drag-over { border-color: var(--aventurine-light); background: rgba(74,124,89,0.06); }
+  .upload-zone.has-files { border-style: solid; border-color: var(--aventurine); background: rgba(74,124,89,0.03); }
 
-  .upload-zone-empty { display: block; }
-  .upload-zone-filled { display: none; }
+  .upload-zone-empty { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .upload-zone-filled { display: none; flex: 1; }
   .upload-zone.has-files .upload-zone-empty { display: none; }
-  .upload-zone.has-files .upload-zone-filled { display: block; }
-  .upload-zone.has-files { border-style: solid; border-color: var(--aventurine); background: rgba(74,124,89,0.03); padding: 14px; }
+  .upload-zone.has-files .upload-zone-filled { display: flex; align-items: center; gap: 8px; flex: 1; }
 
   .uz-icon {
-    width: 32px; height: 32px; margin: 0 auto 10px;
-    border: 1px solid var(--border2); border-radius: 9px;
+    width: 28px; height: 28px; flex-shrink: 0;
+    border: 1px solid var(--border2); border-radius: 7px;
     display: flex; align-items: center; justify-content: center;
-    background: var(--surface2);
+    background: rgba(74,124,89,0.06);
   }
 
-  .uz-text { font-size: 12px; color: var(--text2); margin-bottom: 3px; font-weight: 500; }
-  .uz-sub { font-size: 11px; color: var(--muted); }
+  .uz-copy { flex: 1; }
+  .uz-text { font-size: 11px; color: var(--text2); font-weight: 500; }
+  .uz-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
   .uz-browse {
-    display: inline-block; margin-top: 8px;
-    font-family: var(--mono); font-size: 10px;
+    font-family: var(--mono); font-size: 9px;
     color: var(--aventurine-light); letter-spacing: 0.5px;
-    cursor: pointer;
+    border: 1px solid rgba(107,175,128,0.25); border-radius: 6px;
+    padding: 3px 9px; flex-shrink: 0; white-space: nowrap;
   }
 
   .img-count {
     font-family: var(--mono); font-size: 10px;
-    color: var(--aventurine-light); margin-bottom: 10px;
-    letter-spacing: 0.5px;
+    color: var(--aventurine-light); letter-spacing: 0.5px;
+    flex-shrink: 0;
   }
 
-  .thumb-grid { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .thumb-grid { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
 
   .thumb {
-    position: relative; width: 64px; height: 64px;
-    border-radius: 8px; flex-shrink: 0;
+    position: relative; width: 48px; height: 48px;
+    border-radius: 6px; flex-shrink: 0;
   }
 
   .thumb-img {
-    width: 64px; height: 64px; border-radius: 8px;
+    width: 48px; height: 48px; border-radius: 6px;
     object-fit: cover; display: block;
     border: 1px solid var(--border2);
   }
 
   .thumb-remove {
-    position: absolute; top: -6px; right: -6px;
-    width: 18px; height: 18px; border-radius: 50%;
+    position: absolute; top: -5px; right: -5px;
+    width: 16px; height: 16px; border-radius: 50%;
     background: var(--danger); color: var(--text);
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 11px; font-weight: 700;
-    border: 2px solid var(--bg); z-index: 2;
-    line-height: 1;
+    cursor: pointer; font-size: 10px; font-weight: 700;
+    border: 1.5px solid var(--bg); z-index: 2; line-height: 1;
   }
 
   .thumb-add {
-    width: 64px; height: 64px; border-radius: 8px;
-    border: 1.5px dashed var(--border2);
+    width: 48px; height: 48px; border-radius: 6px;
+    border: 1px dashed var(--border2);
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 20px; color: var(--muted);
-    flex-shrink: 0; transition: all 0.2s;
-    background: transparent;
+    cursor: pointer; font-size: 16px; color: var(--muted);
+    flex-shrink: 0; transition: all 0.2s; background: transparent;
   }
   .thumb-add:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
 
@@ -788,6 +785,84 @@
     color: var(--muted); position: relative;
   }
   .header-icon-btn:hover { border-color: var(--aventurine); color: var(--aventurine-light); background: rgba(74,124,89,0.1); }
+
+  .header-examples-btn {
+    background: transparent;
+    border: 1px solid var(--border2); border-radius: 10px;
+    padding: 7px 14px; color: var(--muted);
+    font-family: var(--mono); font-size: 10px;
+    cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .header-examples-btn:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
+
+  /* Examples modal */
+  .examples-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(4,8,5,0.85); z-index: 200;
+    align-items: flex-start; justify-content: center;
+    padding-top: 72px;
+  }
+  .examples-overlay.open { display: flex; }
+
+  .examples-modal {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 20px; width: 100%; max-width: 560px;
+    margin: 0 24px; overflow: hidden;
+    animation: fadeUp 0.25s ease both;
+  }
+
+  .ex-header {
+    padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .ex-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--text); }
+  .ex-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .ex-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--border2); background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; color: var(--muted); transition: all 0.2s;
+  }
+  .ex-close:hover { border-color: var(--danger); color: var(--danger); }
+
+  .ex-list { padding: 10px 0; }
+
+  .ex-item {
+    padding: 14px 22px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.15s;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .ex-item:hover { background: var(--surface2); }
+  .ex-item:last-child { border-bottom: none; }
+
+  .ex-item-left { flex: 1; }
+  .ex-item-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .ex-item-domain { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.3px; }
+
+  .ex-item-mode {
+    font-family: var(--mono); font-size: 9px;
+    padding: 3px 8px; border-radius: 10px; letter-spacing: 0.3px;
+    border: 1px solid var(--aventurine); color: var(--aventurine-light);
+    background: rgba(74,124,89,0.06); white-space: nowrap; flex-shrink: 0;
+  }
+
+  .ex-footer {
+    padding: 11px 22px; border-top: 1px solid var(--border);
+    background: var(--surface2);
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* Empty state example link */
+  .empty-example-link {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--aventurine-light); cursor: pointer;
+    letter-spacing: 0.5px; text-decoration: none;
+    border-bottom: 1px solid rgba(107,175,128,0.3);
+    transition: border-color 0.2s;
+  }
+  .empty-example-link:hover { border-color: var(--aventurine-light); }
 
   .header-profile-btn { cursor: default; }
   .header-profile-btn:hover { border-color: var(--border2); color: var(--muted); background: rgba(74,124,89,0.06); }
@@ -1213,6 +1288,7 @@
     <div class="logo-name">Arc<span>spect</span></div>
   </div>
   <div class="header-right">
+    <button class="header-examples-btn" onclick="openExamples()">Examples</button>
     <button class="header-icon-btn" id="historyBtn" onclick="openHistory()" title="Session history">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <span class="history-count" id="historyCount" style="display:none">0</span>
@@ -1292,18 +1368,20 @@
                onclick="triggerFileInput()">
             <div class="upload-zone-empty">
               <div class="uz-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--aventurine-light)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                   <polyline points="17 8 12 3 7 8"/>
                   <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
               </div>
-              <div class="uz-text">Drop wireframes or screenshots here</div>
-              <div class="uz-sub">PNG, JPG, WebP · up to 5 images · 10MB each</div>
-              <span class="uz-browse">Browse files</span>
+              <div class="uz-copy">
+                <div class="uz-text">Drop or browse — PNG, JPG, WebP</div>
+                <div class="uz-sub">Up to 5 images · 10MB each</div>
+              </div>
+              <span class="uz-browse">Browse</span>
             </div>
             <div class="upload-zone-filled">
-              <div class="img-count" id="imgCount">0 images attached</div>
+              <div class="img-count" id="imgCount">0 attached</div>
               <div class="thumb-grid" id="thumbGrid"></div>
             </div>
           </div>
@@ -1343,6 +1421,8 @@
         <button class="toolbar-btn" id="editBtn" onclick="setView('edit')" disabled>Edit</button>
         <div class="toolbar-sep"></div>
         <span class="word-count" id="wordCount"></span>
+        <div style="flex:1"></div>
+        <button class="toolbar-btn" id="clearBtn" onclick="clearOutput()">New session</button>
       </div>
       <div class="mode-status-bar" id="modeStatusBar">
         <button class="mode-status-tab tab-active" data-mode="prd" onclick="switchMode('prd')">PRD</button>
@@ -1361,17 +1441,22 @@
             <span style="width:2px;height:8px;opacity:0.2;"></span>
           </div>
           <div class="empty-text">Describe your idea. Your documentation will appear here.</div>
+          <span class="empty-example-link" onclick="openExamples()">Try an example →</span>
         </div>
       </div>
       <textarea class="output-editable" id="outputEditable"></textarea>
       <div class="output-actions">
-        <button class="act-btn" id="copyBtn" onclick="copyOutput()" disabled>Copy</button>
-        <button class="act-btn" id="dlBtn" onclick="downloadOutput()" disabled>↓ .md</button>
-        <button class="act-btn" id="dlDocxBtn" onclick="exportDocx()" disabled>↓ .docx</button>
-        <button class="act-btn" id="dlPdfBtn" onclick="exportPdf()" disabled>↓ .pdf</button>
-        <button class="act-btn act-btn-clear" id="clearBtn" onclick="clearOutput()" disabled>Clear</button>
+        <button class="act-btn" id="copyBtn" onclick="copyOutput()" disabled>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+        <div class="act-sep"></div>
+        <button class="act-btn" id="dlBtn" onclick="downloadOutput()" disabled>.md</button>
+        <button class="act-btn" id="dlDocxBtn" onclick="exportDocx()" disabled>.docx</button>
+        <button class="act-btn" id="dlPdfBtn" onclick="exportPdf()" disabled>.pdf</button>
+        <div class="act-spacer"></div>
         <button class="act-btn act-btn-brief" id="briefBtn" onclick="openBriefModal()" disabled>
-          Download full brief <span class="brief-count" id="briefCount">0</span>
+          Full brief <span class="brief-count" id="briefCount">0</span>
         </button>
       </div>
     </div>
@@ -1448,6 +1533,21 @@
   </div>
 
 </main>
+
+<!-- EXAMPLES MODAL -->
+<div class="examples-overlay" id="examplesOverlay" onclick="closeExamplesOutside(event)">
+  <div class="examples-modal">
+    <div class="ex-header">
+      <div>
+        <div class="ex-title">Example outputs</div>
+        <div class="ex-sub">Real fintech PRDs — no API key needed</div>
+      </div>
+      <div class="ex-close" onclick="closeExamples()">×</div>
+    </div>
+    <div class="ex-list" id="exList"></div>
+    <div class="ex-footer">Click any example to load it into the workspace. Edit and regenerate anytime.</div>
+  </div>
+</div>
 
 <!-- HISTORY MODAL -->
 <div class="history-overlay" id="historyOverlay" onclick="closeHistoryOutside(event)">
@@ -1744,7 +1844,7 @@
     document.getElementById('outputDot').classList.add('live');
     document.getElementById('outputStatus').textContent = 'Generating';
     scroll.innerHTML = `<div class="loading"><div class="loading-gem"></div><div class="loading-text">crafting ${modeNames[mode].toLowerCase()}</div></div>`;
-    ['copyBtn','dlBtn','dlDocxBtn','dlPdfBtn','clearBtn','viewBtn','editBtn','briefBtn'].forEach(id => document.getElementById(id).disabled = true);
+    ['copyBtn','dlBtn','dlDocxBtn','dlPdfBtn','viewBtn','editBtn','briefBtn'].forEach(id => document.getElementById(id).disabled = true);
     updateStatusTabs(mode);
 
     try {
@@ -1793,7 +1893,7 @@
     scroll.style.display = 'block'; editable.style.display = 'none';
     editable.value = text;
     document.getElementById('wordCount').textContent = words + ' words';
-    ['copyBtn','dlBtn','dlDocxBtn','dlPdfBtn','clearBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = false);
+    ['copyBtn','dlBtn','dlDocxBtn','dlPdfBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = false);
     updateBriefCount();
     currentView = 'rendered';
     document.getElementById('viewBtn').classList.add('active');
@@ -1802,11 +1902,11 @@
 
   function showEmpty() {
     const scroll = document.getElementById('outputScroll');
-    scroll.innerHTML = `<div class="output-empty"><div class="empty-spectrum"><span style="width:8px;height:36px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.18;"></span><span style="width:6px;height:28px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.15;"></span><span style="width:5px;height:20px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.12;"></span><span style="width:3px;height:13px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.07;"></span><span style="width:2px;height:8px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.04;"></span></div><div class="empty-text">Describe your idea. Your documentation will appear here.</div></div>`;
+    scroll.innerHTML = `<div class="output-empty"><div class="empty-spectrum"><span style="width:8px;height:36px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.18;"></span><span style="width:6px;height:28px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.15;"></span><span style="width:5px;height:20px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.12;"></span><span style="width:3px;height:13px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.07;"></span><span style="width:2px;height:8px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.04;"></span></div><div class="empty-text">Describe your idea. Your documentation will appear here.</div><span class="empty-example-link" onclick="openExamples()">Try an example →</span></div>`;
     document.getElementById('wordCount').textContent = '';
     document.getElementById('outputStatus').textContent = 'Waiting';
     document.getElementById('outputDot').classList.remove('live');
-    ['copyBtn','dlBtn','dlDocxBtn','dlPdfBtn','clearBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = true);
+    ['copyBtn','dlBtn','dlDocxBtn','dlPdfBtn','viewBtn','editBtn'].forEach(id => document.getElementById(id).disabled = true);
   }
 
   // ── Generate (main button) ────────────────────────────────────────
@@ -2056,6 +2156,9 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
     currentIntel = '';
     showEmpty();
     document.getElementById('outputEditable').value = '';
+    document.getElementById('inputText').value = '';
+    document.getElementById('contextText').value = '';
+    clearImages();
     currentView = 'rendered';
     document.getElementById('viewBtn').classList.add('active');
     document.getElementById('editBtn').classList.remove('active');
@@ -2184,6 +2287,270 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
     })
     .catch(() => toast('⚠ Export failed'))
     .finally(() => { btn.disabled = false; btn.textContent = `Download ${count} sections →`; updateModalBtn(); });
+  }
+
+  // ── Examples ──────────────────────────────────────────────────────
+  const EXAMPLES = [
+    {
+      id: 'merchant-settlement', mode: 'prd',
+      label: 'Merchant instant settlement', domain: 'Payments · B2B',
+      idea: 'A feature that lets merchants on our payments platform choose between instant settlement to their bank account (for a small fee) or standard next-day settlement at no cost.',
+      output: `# Product Requirements Document: Instant Settlement for Merchants
+
+## Problem Statement
+
+Merchants on our payments platform currently wait 24 hours for funds to arrive in their bank accounts. For small and medium businesses managing tight cash flows — paying suppliers, restocking inventory, covering payroll — this delay creates real operational friction. Competitors including Stripe and Flutterwave already offer instant or same-day payout options. Our merchants are asking for it, and some are leaving for platforms that offer it.
+
+**The core problem:** Cash flow uncertainty caused by settlement delay costs merchants time, money, and trust.
+
+## Goals
+
+1. Reduce merchant churn attributable to settlement delay by 30% within 6 months of launch
+2. Generate a new revenue stream via instant settlement fees — target ₦180M in fee revenue in year one
+3. Improve merchant NPS by 12 points among high-volume merchants (processing >₦5M/month)
+4. Establish a competitive differentiator in the Nigerian merchant payments market
+
+## Non-Goals (V1)
+
+- Weekend or public holiday instant settlements (bank rails limitation — deferred to v2)
+- Instant settlement for international cross-border transactions
+- Automatic instant settlement by default — this is always merchant-initiated
+- Refund processing changes — settlement timing for refunds unchanged in v1
+- Sub-₦500 transaction instant settlement (fee economics don't work at micro-transaction scale)
+
+## User Personas
+
+| Persona | Background | Goals | Pain Points | Value Driver |
+|---------|------------|-------|-------------|--------------|
+| Kemi, the Retailer | Runs a mid-size Lagos electronics shop, processes ₦8M/month, 3 staff | Pay suppliers same day, avoid overdraft fees | Next-day wait means she can't restock fast-moving inventory after a strong sales day | Instant access to funds after a big sales day |
+| Tunde, the Event Merchant | Freelance caterer, processes ₦2–4M/month in bursts around events | Cover post-event costs immediately | Cash crunch between event income and supplier payment windows | Confidence that funds arrive before supplier payment due dates |
+| Amara, Finance Manager | Works at a 50-person retail chain, manages treasury | Predictable cash positioning, audit trail | Manual reconciliation across settlement dates creates accounting overhead | Controllable settlement timing for cleaner month-end close |
+
+## Proposed Solution
+
+A merchant-initiated instant settlement feature accessible from the Merchant Dashboard. Merchants can select any eligible settled transaction batch and choose to move funds instantly to their registered bank account for a flat fee of 1.5% (capped at ₦15,000 per transaction). Standard next-day settlement remains free and default.
+
+## Key Features
+
+### Feature 1: Instant Settlement Initiation
+
+- Merchants see an "Instant Settlement" option on any pending settlement batch on the dashboard
+- Clear display of: settlement amount, instant fee (1.5%), net payout, and estimated arrival time (under 30 minutes)
+- One-click confirmation with 2FA verification for amounts above ₦500,000
+- Real-time status tracking: Initiated → Processing → Confirmed
+
+### Feature 2: Eligibility Engine
+
+- Transactions must be fully captured and fraud-cleared before eligible for instant settlement
+- Minimum batch size: ₦5,000
+- Maximum single instant settlement: ₦10,000,000 (risk limit, v1)
+- Merchants with active disputes or holds on their account are ineligible until resolved
+
+### Feature 3: Settlement History & Receipts
+
+- Unified settlement history showing both instant and standard settlements
+- Downloadable receipts per settlement for accounting purposes
+- Monthly summary report exportable as CSV or PDF
+- Clear fee line items in all receipts for merchant tax compliance
+
+## User Flow
+
+1. Merchant logs into dashboard and views pending settlements
+2. Merchant selects a settlement batch and clicks "Settle Instantly"
+3. System displays fee breakdown and confirmation screen
+4. Merchant confirms with PIN or OTP for large amounts
+5. System initiates NIP transfer to merchant's registered bank account
+6. Merchant receives real-time status update — funds arrive within 30 minutes
+7. Settlement appears in history with fee receipt
+
+## Success Metrics
+
+### Primary Metric
+Instant settlement adoption rate — target 25% of eligible settlement volume opted into instant within 90 days.
+
+### Supporting Metrics
+
+- Instant settlement fee revenue: ₦180M ARR by end of year one
+- Merchant churn reduction: 30% decrease in churn citing settlement delay
+- Settlement NPS: +12 points among merchants who use instant settlement vs those who don't
+- Time-to-funds: 95th percentile under 30 minutes
+
+## Risks & Assumptions
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| NIP infrastructure downtime affects SLA | Medium | High | Fallback to standard settlement with full fee refund and merchant notification |
+| Fee sensitivity — merchants resist 1.5% cost | High | Medium | A/B test fee at 1.0% and 1.5% in pilot; offer first instant settlement free |
+| Fraud actors exploit instant settlement speed | Medium | High | Pre-settlement fraud scoring gate; hold rule for new or flagged accounts |
+| Bank partner processing delays outside our control | Low | High | SLA agreement with bank partner; dedicated settlement desk contact |`
+    },
+    {
+      id: 'savings-goal', mode: 'stories',
+      label: 'Savings goal feature', domain: 'Consumer fintech · B2C',
+      idea: 'A feature that lets PiggyVest users create named savings goals with a target amount and deadline, automatically calculating how much they need to save per week to hit the goal on time.',
+      output: `# User Stories: Savings Goal Feature
+
+## Story 1: Create a savings goal
+
+**As a** PiggyVest user, **I want to** create a named savings goal with a target amount and deadline, **So that** I can save intentionally toward something specific rather than saving without direction.
+
+**Acceptance Criteria:**
+
+- [ ] Given I am on the Savings screen, When I tap "New Goal", Then I see a creation form with fields for goal name, target amount, and target date
+- [ ] Given I enter a goal name longer than 50 characters, When I try to proceed, Then I see an inline error: "Goal name must be under 50 characters"
+- [ ] Given I enter a target date in the past, When I try to save, Then I see an inline error: "Target date must be in the future"
+- [ ] Given I enter a valid name, amount, and future date, When I tap "Create Goal", Then the goal is created and I am taken to the goal detail screen
+- [ ] Given my goal is created, When I view it, Then I see my weekly savings target calculated automatically based on amount and deadline
+
+## Story 2: View savings progress
+
+**As a** PiggyVest user, **I want to** see how much I've saved toward my goal and how much I have left, **So that** I can track my progress and stay motivated.
+
+**Acceptance Criteria:**
+
+- [ ] Given I have an active savings goal, When I open the goal, Then I see current balance, target amount, amount remaining, and percentage complete
+- [ ] Given my goal is at 0% progress, When I view it, Then I see a progress bar at 0% with a motivational empty state: "Your first contribution starts your streak"
+- [ ] Given my goal is past its target date with less than 100% saved, When I view it, Then I see an "Overdue" badge and a prompt to extend the deadline or close the goal
+- [ ] Given I have saved exactly the target amount, When I view the goal, Then I see a celebration state with a "Goal reached" badge and option to withdraw or keep saving
+
+## Story 3: Make a manual contribution
+
+**As a** PiggyVest user, **I want to** add money to my savings goal manually, **So that** I can top up when I have extra cash available.
+
+**Acceptance Criteria:**
+
+- [ ] Given I am on a goal detail screen, When I tap "Add funds", Then I see an amount input with my wallet balance shown
+- [ ] Given I enter an amount greater than my available wallet balance, When I try to confirm, Then I see an error: "Insufficient balance. Top up your wallet first."
+- [ ] Given I enter a valid amount, When I confirm the contribution, Then funds move from my wallet to the goal and my progress updates immediately
+- [ ] Given a contribution is successful, When it completes, Then I see a confirmation toast: "₦X added to [Goal name]"
+
+## Story 4: Set up automatic contributions
+
+**As a** PiggyVest user, **I want to** set up a recurring automatic contribution toward my goal, **So that** I save consistently without having to remember to do it manually.
+
+**Acceptance Criteria:**
+
+- [ ] Given I am on a goal detail screen, When I tap "Automate", Then I see options for daily, weekly, or monthly contribution frequency
+- [ ] Given I select weekly and set an amount, When I confirm, Then the system schedules weekly deductions from my wallet starting the next occurrence
+- [ ] Given I have an active auto-contribution and my wallet balance is insufficient on deduction day, When the deduction runs, Then it is skipped and I receive a push notification: "Auto-save skipped — top up your wallet to stay on track"
+- [ ] Given I want to pause auto-contributions, When I toggle "Pause" on the automation, Then future deductions are paused and I see a "Paused" badge on the goal
+
+## Story 5: Edit or close a goal
+
+**As a** PiggyVest user, **I want to** edit my goal details or close a goal I no longer need, **So that** I can adapt my savings plan as my circumstances change.
+
+**Acceptance Criteria:**
+
+- [ ] Given I am on a goal detail screen, When I tap the edit icon, Then I can update the goal name, target amount, and target date
+- [ ] Given I reduce the target amount to below my current balance, When I save the edit, Then I see a prompt: "You've already reached this target. Would you like to withdraw the surplus?"
+- [ ] Given I tap "Close goal", When I confirm, Then all funds in the goal are returned to my wallet and the goal is archived
+- [ ] Given a goal has an active auto-contribution, When I close the goal, Then the auto-contribution is automatically cancelled and I see a confirmation of this in the closure summary`
+    },
+    {
+      id: 'cross-border-risks', mode: 'risks',
+      label: 'Cross-border payment integration', domain: 'Payments · Regulatory',
+      idea: 'Integrating a cross-border payment rail to allow Nigerian merchants to receive payments from international customers in USD, GBP and EUR, with automatic conversion to NGN at the point of settlement.',
+      output: `# Risks & Assumptions Register: Cross-Border Payment Rail Integration
+
+## Key Assumptions
+
+- CBN will maintain the current regulated FX framework during the build and launch period (6–12 months)
+- Our banking partner has an existing correspondent banking relationship sufficient to support USD, GBP, and EUR inflows without requiring a new banking licence
+- FX conversion at settlement point is legally permissible without a separate FX dealing licence under current CBN guidelines
+- Merchant KYC data already collected satisfies international payment scheme requirements without a full re-verification
+
+## Technical Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Payment gateway API instability causing failed international transactions | Medium | High | Implement retry logic with exponential backoff; webhook-based reconciliation; dual-gateway fallback for USD |
+| FX rate feed latency causing settlement at wrong rate | Medium | High | Lock FX rate at transaction initiation; 15-minute rate lock window with clear merchant disclosure |
+| Chargeback handling differs per currency scheme — our current system is NGN-only | High | High | Build currency-aware chargeback workflow before launch; engage Visa/Mastercard scheme compliance teams early |
+| Correspondent bank settlement delays for GBP and EUR during non-business hours | High | Medium | Batch settlement windows with clear merchant SLAs; do not promise same-day for GBP/EUR in v1 |
+| PCI DSS compliance gaps for storing international card data | Low | Critical | Engage QSA for gap assessment before any international card data flows through our infrastructure |
+
+## Business Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| FX spread compression — NGN volatility erodes margin on conversion | High | High | Dynamic spread model with floor protection; hedge position for expected monthly FX volume |
+| Merchant pricing confusion — fees differ for international vs domestic transactions | High | Medium | Dedicated merchant communication campaign; clear fee schedule in dashboard before launch |
+| Low initial adoption — merchants don't promote international payment option to customers | Medium | Medium | Provide merchants with ready-made marketing copy and payment link templates for international customers |
+| Competitor launches similar feature during our build window | Medium | Medium | Accelerate MVP scope; identify one anchor merchant for exclusive early access announcement |
+
+## Regulatory & Compliance Risks
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| CBN policy change restricting FX inflows to licensed entities only | Medium | Critical | Engage regulatory counsel before build starts; architecture should support licensed entity wrapper without full rebuild |
+| OFAC sanctions screening not applied to international payers | Low | Critical | Integrate OFAC screening at transaction initiation; block flagged entities before funds move |
+| NDPR/GDPR conflict — international customer data stored in Nigerian infrastructure | Medium | High | Data residency architecture review; consider EU data processing agreement for GBP/EUR customers |
+| CBN reporting requirements for FX transactions not met at scale | Medium | High | Automate CBN Form A/M reporting from day one; manual process will not scale past 500 transactions/month |
+
+## Open Questions
+
+- Does our current CBN approval cover receipt of inbound foreign currency payments, or do we need a separate authorisation?
+- What is the scheme liability model for chargebacks on international transactions?
+- Should we support USD wallet holding or force immediate conversion at settlement?
+- At what monthly FX volume does a dedicated FX hedging programme become economically justified vs. spot conversion?`
+    }
+  ];
+
+  const modeExLabels = { prd: 'Full PRD', stories: 'User Stories', criteria: 'Acceptance Criteria', metrics: 'Success Metrics', risks: 'Risks & Assumptions' };
+
+  function openExamples() {
+    document.getElementById('examplesOverlay').classList.add('open');
+    const list = document.getElementById('exList');
+    list.innerHTML = EXAMPLES.map(e => `
+      <div class="ex-item" onclick="loadExample('${e.id}')">
+        <div class="ex-item-left">
+          <div class="ex-item-title">${e.label}</div>
+          <div class="ex-item-domain">${e.domain}</div>
+        </div>
+        <span class="ex-item-mode">${modeExLabels[e.mode]}</span>
+      </div>`).join('');
+  }
+
+  function closeExamples() {
+    document.getElementById('examplesOverlay').classList.remove('open');
+  }
+
+  function closeExamplesOutside(e) {
+    if (e.target === document.getElementById('examplesOverlay')) closeExamples();
+  }
+
+  function loadExample(id) {
+    const example = EXAMPLES.find(e => e.id === id);
+    if (!example) return;
+
+    // Set mode
+    currentMode = example.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === example.mode));
+    document.getElementById('modeHint').textContent = modes[example.mode].hint;
+    document.getElementById('inputText').placeholder = modes[example.mode].placeholder;
+    document.getElementById('modeTag').textContent = modeLabels[example.mode];
+
+    // Populate idea field
+    document.getElementById('inputText').value = example.idea;
+
+    // Clear all caches then set this mode's cache
+    Object.keys(modeCache).forEach(k => modeCache[k] = null);
+    const words = example.output.split(/\s+/).filter(Boolean).length;
+    modeCache[example.mode] = { text: example.output, words };
+
+    // Render output
+    renderOutput(example.output, words);
+    updateStatusTabs(null);
+    updateBriefCount();
+
+    // Show go deeper if PRD
+    if (example.mode === 'prd') {
+      document.getElementById('goDeeperSection').classList.add('visible');
+      document.getElementById('goDeeperBtn').disabled = false;
+    }
+
+    closeExamples();
+    toast('✓ Example loaded — edit the idea and regenerate anytime');
   }
 
   // ── History ───────────────────────────────────────────────────────
@@ -2394,7 +2761,7 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
   });
   document.addEventListener('keydown', e => {
     if ((e.metaKey||e.ctrlKey) && e.key==='Enter') generate();
-    if (e.key === 'Escape') { closeBriefModal(); closeHistory(); }
+    if (e.key === 'Escape') { closeBriefModal(); closeHistory(); closeExamples(); }
   });
 </script>
 </body>
