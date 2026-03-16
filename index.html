@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Arcspect — Great products start here.</title>
+<title>Arcspect — Think clearly. Ship faster.</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -65,24 +65,17 @@
     backdrop-filter: blur(16px);
   }
 
-  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo { display: flex; align-items: center; gap: 12px; }
 
   .logo-mark {
-    width: 36px; height: 36px;
-    border: 1.5px solid var(--aventurine);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    background: rgba(74,124,89,0.08);
+    display: flex; align-items: flex-end; gap: 3px;
+    height: 28px; padding-bottom: 1px;
   }
 
-  .logo-mark::before {
-    content: '';
-    width: 12px; height: 12px;
-    background: var(--aventurine-light);
-    border-radius: 3px;
-    transform: rotate(15deg);
-    box-shadow: 0 0 12px rgba(107,175,128,0.4);
+  .logo-mark span {
+    display: block; border-radius: 2px;
+    background: linear-gradient(to bottom, var(--aventurine-light), var(--aventurine));
+    flex-shrink: 0;
   }
 
   .logo-name {
@@ -473,7 +466,18 @@
   .output-empty {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    min-height: 360px; gap: 16px; padding: 40px;
+    min-height: 320px; gap: 14px; padding: 40px;
+  }
+
+  .empty-spectrum {
+    display: flex; align-items: flex-end; gap: 3px;
+    opacity: 0.18;
+  }
+
+  .empty-spectrum span {
+    display: block; border-radius: 2px;
+    background: var(--aventurine-light);
+    flex-shrink: 0;
   }
 
   .empty-gem {
@@ -1199,7 +1203,13 @@
 
 <header>
   <div class="logo">
-    <div class="logo-mark"></div>
+    <div class="logo-mark">
+      <span style="width:5px;height:26px;"></span>
+      <span style="width:4px;height:20px;opacity:0.85;"></span>
+      <span style="width:3px;height:15px;opacity:0.65;"></span>
+      <span style="width:2px;height:10px;opacity:0.4;"></span>
+      <span style="width:1.5px;height:6px;opacity:0.2;"></span>
+    </div>
     <div class="logo-name">Arc<span>spect</span></div>
   </div>
   <div class="header-right">
@@ -1215,9 +1225,9 @@
 
 <main>
   <div class="hero">
-    <div class="hero-eyebrow">AI Product Documentation</div>
-    <h1>Great products<br/><em>start here.</em></h1>
-    <p class="hero-sub">Stop writing. Start shipping.</p>
+    <div class="hero-eyebrow">Product thinking. Shipped.</div>
+    <h1>Think clearly.<br/><em>Ship faster.</em></h1>
+    <p class="hero-sub">From idea to spec in minutes.</p>
   </div>
 
   <div class="mode-grid">
@@ -1343,8 +1353,14 @@
       </div>
       <div class="output-scroll" id="outputScroll">
         <div class="output-empty">
-          <div class="empty-gem">◈</div>
-          <div class="empty-text">Your documentation will appear here after generation.</div>
+          <div class="empty-spectrum">
+            <span style="width:8px;height:36px;"></span>
+            <span style="width:6px;height:28px;opacity:0.85;"></span>
+            <span style="width:5px;height:20px;opacity:0.65;"></span>
+            <span style="width:3px;height:13px;opacity:0.4;"></span>
+            <span style="width:2px;height:8px;opacity:0.2;"></span>
+          </div>
+          <div class="empty-text">Describe your idea. Your documentation will appear here.</div>
         </div>
       </div>
       <textarea class="output-editable" id="outputEditable"></textarea>
@@ -1786,7 +1802,7 @@
 
   function showEmpty() {
     const scroll = document.getElementById('outputScroll');
-    scroll.innerHTML = `<div class="output-empty"><div class="empty-gem">◈</div><div class="empty-text">Your documentation will appear here after generation.</div></div>`;
+    scroll.innerHTML = `<div class="output-empty"><div class="empty-spectrum"><span style="width:8px;height:36px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.18;"></span><span style="width:6px;height:28px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.15;"></span><span style="width:5px;height:20px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.12;"></span><span style="width:3px;height:13px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.07;"></span><span style="width:2px;height:8px;display:block;border-radius:2px;background:var(--aventurine-light);opacity:0.04;"></span></div><div class="empty-text">Describe your idea. Your documentation will appear here.</div></div>`;
     document.getElementById('wordCount').textContent = '';
     document.getElementById('outputStatus').textContent = 'Waiting';
     document.getElementById('outputDot').classList.remove('live');
