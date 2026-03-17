@@ -1,134 +1,217 @@
-# PM Agent — Product Spec
-
-**Version:** 0.1  
-**Author:** Efe Ogufere  
-**Status:** Draft  
-**Last Updated:** March 2026
-
----
-
-## Problem Statement
-
-Writing structured product documentation is one of the most time-consuming
-parts of a PM's workflow. A simple feature request can take hours to turn into
-a properly formatted PRD with user stories, acceptance criteria, success
-metrics, and risk assessment. This tool collapses that process from hours to
-seconds.
+# Arcspect — Product Specification
+**Version:** 2.0  
+**Last Updated:** March 2026  
+**Status:** Live at [arcspect.netlify.app](https://arcspect.netlify.app)  
+**Built by:** Efe Ogufere — Group PM, PiggyTech
 
 ---
 
-## Target User
+## What is Arcspect
 
-Any product manager, regardless of industry or seniority, who needs to
-translate a rough product idea or feature request into structured documentation
-quickly.
+Arcspect is an AI-powered product documentation tool that turns a one-line idea into structured product specs in seconds. It is built for senior PMs who need to eliminate the blank page problem — not replace their thinking.
 
-**Primary persona:** A PM who has a one-line idea from a stakeholder meeting
-and needs to turn it into a shareable spec before the next standup.
-
----
-
-## Goals
-
-- Reduce time-to-spec from hours to under 60 seconds
-- Produce documentation consistent enough to hand directly to engineering
-- Require zero setup or technical knowledge to use
+**Tagline:** Think clearly. Ship faster.  
+**Parent brand:** The Aventurine Tech Hub Ltd.  
+**Position in product suite:** Arcspect (Build) → Luster (Move) → Clarity (Operate)
 
 ---
 
-## Non-Goals (v0.1)
+## Problem it solves
 
-- This is not a full project management tool
-- It does not integrate with Jira, Linear, or Confluence (yet)
-- It does not store or save previous outputs (yet)
+Writing product documentation is one of the highest-leverage activities a PM does — and one of the most time-consuming. A PRD that takes two hours to draft from scratch takes two minutes with Arcspect. The PM still owns the decisions; Arcspect removes the friction of getting the first draft on the page.
 
 ---
 
-## Features
+## Documentation modes
 
-### 1. PRD Generator
-**Input:** A one-line product idea or problem statement  
-**Output:** A full PRD including:
-- Problem statement
-- Goals and non-goals
-- User personas
-- Proposed solution
-- Success metrics
-- Risks and assumptions
-
-### 2. Epic → User Stories
-**Input:** An epic or high-level feature description  
-**Output:** A set of properly formatted user stories  
-`As a [user], I want to [action], so that [outcome].`
-
-### 3. Acceptance Criteria Writer
-**Input:** A user story or feature description  
-**Output:** A checklist of acceptance criteria covering happy path,
-edge cases, and failure states
-
-### 4. Success Metrics Suggester
-**Input:** A feature or product goal  
-**Output:** Suggested leading and lagging metrics with measurement approach
-
-### 5. Risks & Assumptions
-**Input:** A feature or product idea  
-**Output:** A structured list of risks (technical, business, user) and
-assumptions that need validation
+| Mode | What it generates |
+|------|------------------|
+| **Full PRD** | Problem statement, goals, non-goals, personas, proposed solution, key features, user flow, success metrics, risks, open questions |
+| **User Stories** | 5–8 backlog-ready stories in As a / I want / So that format with Given/When/Then acceptance criteria |
+| **Acceptance Criteria** | Happy path, edge cases, error states, non-functional requirements |
+| **Success Metrics** | North star metric, leading/lagging indicators, guardrail metrics, measurement guidance, targets |
+| **Risks & Assumptions** | Technical, business, user/adoption, and regulatory risk registers with likelihood/impact/mitigation |
 
 ---
 
-## Output Options
+## Feature inventory
 
-- Copy to clipboard with one click
-- Download as a `.md` (markdown) file for use in GitHub, Notion, or Confluence
+### Core generation
+- Five documentation modes with per-session output caching
+- Auto-generate on mode tab switch (uses cached output if available)
+- Live status indicators per mode tab (generated / not yet)
+- Context input (collapsible) — accepts user research, constraints, business goals
+- Wireframe and screenshot upload — up to 5 images (PNG/JPG/WebP, 10MB each), sent as multimodal context to Claude API
+- ⌘↵ keyboard shortcut to generate from anywhere
+
+### Output
+- Preview (rendered markdown) and Edit (raw markdown) toggle
+- Word count display
+- Copy to clipboard
+- Download as .md, .docx, or .pdf
+
+### Export
+- Full brief download modal — select any combination of generated modes
+- Three export formats: Markdown, Word (.docx), PDF
+- DOCX: Inter font, green section labels, header/footer, page numbers
+- PDF: Inter font embedded as base64 via pdfkit, structured document with header/footer
+
+### Intelligence layer
+- Go Deeper — Competitive Intelligence: uses PRD as context, generates named competitor profiles, a comparison table, and opportunity analysis
+- Gold aesthetic to distinguish from core green generation flow
+- Intel panel appears below workspace after generation
+
+### Examples
+- Three pre-loaded fintech examples (no API key needed)
+- Merchant instant settlement — Full PRD
+- Savings goal feature — User Stories
+- Cross-border payment integration — Risks & Assumptions
+- Accessible from "Examples" button in header and "Try an example" link in empty state
+- Loading an example populates the idea field and renders output — fully editable and regeneratable
+
+### Session management
+- Auto-save to localStorage after every generation
+- History modal (clock icon) — view, search, restore, delete sessions
+- Max 20 sessions stored
+- New session button — resets idea, context, images, output, and all caches
+- Restore session — repopulates all fields and cached outputs
+
+### Theme
+- Dark mode (default) — deep forest green, dark surfaces
+- Light mode — sage green background, white cards, deep forest green header
+- System preference respected on first load
+- Manual override stored in localStorage
+- Sun/moon toggle in header
+
+### Keyboard shortcuts
+| Shortcut | Action |
+|----------|--------|
+| ⌘↵ | Generate |
+| ⌘K | New session |
+| ⌘1–5 | Switch mode (PRD, Stories, Criteria, Metrics, Risks) |
+| ⌘E | Open examples |
+| ⌘H | Session history |
+| ⌘C | Copy output (when not in text field) |
+| ⌘D | Download Markdown |
+| ? | Open keyboard shortcuts |
+| Esc | Close any open panel |
 
 ---
 
-## User Flow
+## Technical architecture
 
-1. User lands on the page
-2. Selects which type of output they need (PRD / User Stories / Criteria /
-   Metrics / Risks)
-3. Types or pastes their input into a text box
-4. Clicks "Generate"
-5. Output appears on the right side of the screen
-6. User copies or downloads the result
+### Stack
+- **Frontend:** Vanilla HTML, CSS, JavaScript — no frameworks, no build step
+- **Backend:** Netlify Functions (serverless)
+- **AI:** Anthropic Claude Haiku via `/v1/messages`
+- **PDF export:** pdfkit with Inter Regular + Bold embedded as base64
+- **DOCX export:** docx npm package
+
+### File structure
+```
+arcspect/
+├── index.html              — full frontend (single file, ~2,950 lines)
+├── netlify.toml            — functions directory config
+├── package.json            — pdfkit, docx dependencies
+├── README.md               — public-facing documentation
+├── SPEC.md                 — this file
+└── functions/
+    ├── generate.js         — Claude API proxy (multimodal: text + images)
+    ├── export-docx.js      — Word document generation
+    ├── export-pdf.js       — PDF generation with embedded fonts
+    └── fonts.js            — Inter Regular + Bold as base64
+```
+
+### API flow
+1. User enters idea + optional context + optional images
+2. Frontend builds prompt using mode-specific template
+3. POST to `/.netlify/functions/generate` with API key in `x-api-key` header
+4. Netlify function proxies to Anthropic API — no CORS issues, key never exposed in browser
+5. Response streamed back, rendered as markdown in output panel
+
+### Multimodal flow
+When images are attached:
+- Images converted to base64 in browser
+- Sent as `image` content blocks before the text prompt
+- Claude API processes visual context alongside the text idea
+
+### Export flow
+- `.md` — client-side Blob download, no server call
+- `.docx` — POST to `/.netlify/functions/export-docx`, returns binary
+- `.pdf` — POST to `/.netlify/functions/export-pdf`, returns binary
+- Full brief — collects all cached mode outputs, sends as single payload
+
+### Critical implementation notes
+- `index.html` has exactly one `<script>` tag — never add a second
+- Check for duplicate `const` declarations before committing — they crash the entire script silently
+- `netlify.toml` must NOT have `node_bundler = "esbuild"` — breaks pdfkit
+- `fonts.js` must be in `functions/` alongside export scripts
+- API key is passed via request header, never stored server-side
+- Hard refresh after deploy: Cmd+Shift+R
 
 ---
 
-## Success Metrics
+## Design system
 
-- Time from input to output: under 10 seconds
-- Output quality: usable without significant editing
-- Adoption: shared with at least 3 other PMs within 30 days of launch
+**Parent brand:** The Aventurine Tech Hub Ltd.  
+**Logo:** Mark C — Spectrum mark (5 vertical lines, decreasing weight, light-to-dark green fade)
+
+### Colour palette (dark mode)
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `--bg` | `#080C09` | Page background |
+| `--surface` | `#0D1410` | Panel backgrounds |
+| `--aventurine` | `#4A7C59` | Interactive elements, borders |
+| `--aventurine-light` | `#6BAF80` | Hover states, emphasis |
+| `--gold` | `#C9A84C` | Premium accent (Go Deeper, Full Brief) |
+| `--text` | `#EDF2EE` | Primary text |
+
+### Colour palette (light mode)
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `--bg` | `#EDF5EF` | Sage green page background |
+| `--surface` | `#FFFFFF` | White cards |
+| `--aventurine` | `#1C4A2A` | Header, CTAs, active states |
+| `--aventurine-light` | `#2E6B42` | Hover states |
+| `--gold` | `#7A5C10` | Eyebrow, premium accents |
+
+### Typography
+- **Display:** Plus Jakarta Sans 800 — headlines, product name
+- **Body:** DM Sans 300–600 — UI copy, descriptions
+- **Mono:** DM Mono 400–500 — labels, badges, metadata, code
 
 ---
 
-## Risks & Assumptions
+## Roadmap
 
-| Risk | Likelihood | Mitigation |
-|------|------------|------------|
-| Output quality too generic | Medium | Fine-tune prompts with real PM examples |
-| Users don't trust AI-generated specs | Low | Add "review before sharing" disclaimer |
-| Anthropic API costs at scale | Low | Rate limit free usage in v1 |
+### Completed
+- [x] Five documentation modes with caching
+- [x] Go Deeper competitive intelligence
+- [x] Wireframe and screenshot input (multimodal)
+- [x] Full brief export (Markdown, DOCX, PDF)
+- [x] Session history with restore
+- [x] Pre-loaded fintech examples
+- [x] Light and dark mode
+- [x] Keyboard shortcuts panel
+- [x] GitHub README
+
+### Next
+- [ ] Landing page at arcspect.netlify.app
+- [ ] Notion export
+- [ ] Demo GIF for README
+
+### Parked (until external users exist)
+- [ ] Memory architecture — persistent context across sessions
+- [ ] User accounts and saved projects
+- [ ] Industry/sector onboarding
+- [ ] Go Deeper monetisation (usage-based credits)
 
 ---
 
-## Tech Stack
+## Why this exists
 
-- **Frontend:** HTML, CSS, JavaScript (single file)
-- **Backend:** Anthropic Claude API (claude-sonnet-4-20250514)
-- **Deployment:** Netlify
-- **Repo:** github.com/anovelbygod/pm-agent
+Built by a Group PM with 7+ years across fintech and payments to solve a problem faced daily — leading four PMs across six products at PiggyTech. The blank page problem is real. Arcspect is the answer.
 
----
+Part of a deliberate strategy to build technical range as a PM: not to become an engineer, but to close the gap between thinking and shipping to near-zero.
 
-## Milestones
-
-| Milestone | Target |
-|-----------|--------|
-| Spec complete | Week 1 |
-| PRD Generator working | Week 2 |
-| All 5 features live | Week 3 |
-| Deployed on Netlify | Week 3 |
-| Shared publicly | Week 4 |
+*The Aventurine Tech Hub Ltd. · github.com/anovelbygod · March 2026*

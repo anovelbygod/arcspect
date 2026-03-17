@@ -1094,6 +1094,9 @@
   .light-mode .toolbar-btn.active { background: rgba(28,74,42,0.08); border-color: #1C4A2A; color: #1C4A2A; }
   .light-mode .toolbar-btn:hover { border-color: #1C4A2A; color: #1C4A2A; }
 
+  .light-mode .shortcuts-modal { box-shadow: 0 8px 40px rgba(28,74,42,0.15); }
+  .light-mode .sk-key { background: var(--surface3); border-color: var(--border2); }
+
   /* Modals */
   .light-mode .history-modal,
   .light-mode .examples-modal,
@@ -1370,6 +1373,59 @@
   }
   .toast.show { transform: translateY(0); opacity: 1; }
 
+  /* Keyboard shortcuts modal */
+  .shortcuts-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(4,8,5,0.85); z-index: 200;
+    align-items: flex-start; justify-content: center;
+    padding-top: 72px;
+  }
+  .shortcuts-overlay.open { display: flex; }
+
+  .shortcuts-modal {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 20px; width: 100%; max-width: 480px;
+    margin: 0 24px; overflow: hidden;
+    animation: fadeUp 0.25s ease both;
+  }
+
+  .sk-header {
+    padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sk-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--text); }
+  .sk-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .sk-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--border2); background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; color: var(--muted); transition: all 0.2s;
+  }
+  .sk-close:hover { border-color: var(--danger); color: var(--danger); }
+
+  .sk-group { padding: 10px 22px; border-bottom: 1px solid var(--border); }
+  .sk-group:last-child { border-bottom: none; padding-bottom: 16px; }
+  .sk-group-title {
+    font-family: var(--mono); font-size: 9px; color: var(--muted);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 10px 0 8px;
+  }
+  .sk-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 0; border-bottom: 1px solid var(--border);
+  }
+  .sk-row:last-child { border-bottom: none; }
+  .sk-desc { font-size: 13px; color: var(--text2); }
+  .sk-keys { display: flex; gap: 4px; align-items: center; }
+  .sk-key {
+    font-family: var(--mono); font-size: 10px;
+    background: var(--surface2); color: var(--text2);
+    border: 1px solid var(--border2); border-radius: 5px;
+    padding: 3px 7px; min-width: 24px; text-align: center;
+    box-shadow: 0 1px 0 var(--border2);
+  }
+  .sk-plus { font-size: 10px; color: var(--muted); }
+
   /* Animations */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
@@ -1436,6 +1492,9 @@
     <button class="header-icon-btn" id="historyBtn" onclick="openHistory()" title="Session history">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       <span class="history-count" id="historyCount" style="display:none">0</span>
+    </button>
+    <button class="header-icon-btn" onclick="openShortcuts()" title="Keyboard shortcuts (?)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
     </button>
     <button class="header-icon-btn header-profile-btn" title="Profile">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -1677,6 +1736,83 @@
   </div>
 
 </main>
+
+<!-- SHORTCUTS MODAL -->
+<div class="shortcuts-overlay" id="shortcutsOverlay" onclick="closeShortcutsOutside(event)">
+  <div class="shortcuts-modal">
+    <div class="sk-header">
+      <div>
+        <div class="sk-title">Keyboard shortcuts</div>
+        <div class="sk-sub">Press ? anywhere to open this panel</div>
+      </div>
+      <div class="sk-close" onclick="closeShortcuts()">×</div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-group-title">Generation</div>
+      <div class="sk-row">
+        <span class="sk-desc">Generate documentation</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">↵</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">New session</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">K</span></div>
+      </div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-group-title">Modes</div>
+      <div class="sk-row">
+        <span class="sk-desc">Full PRD</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">1</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">User Stories</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">2</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Acceptance Criteria</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">3</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Success Metrics</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">4</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Risks & Assumptions</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">5</span></div>
+      </div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-group-title">Output</div>
+      <div class="sk-row">
+        <span class="sk-desc">Copy output</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">C</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Download Markdown</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">D</span></div>
+      </div>
+    </div>
+    <div class="sk-group">
+      <div class="sk-group-title">Navigation</div>
+      <div class="sk-row">
+        <span class="sk-desc">Open examples</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">E</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Session history</span>
+        <div class="sk-keys"><span class="sk-key">⌘</span><span class="sk-plus">+</span><span class="sk-key">H</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Keyboard shortcuts</span>
+        <div class="sk-keys"><span class="sk-key">?</span></div>
+      </div>
+      <div class="sk-row">
+        <span class="sk-desc">Close any panel</span>
+        <div class="sk-keys"><span class="sk-key">Esc</span></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- EXAMPLES MODAL -->
 <div class="examples-overlay" id="examplesOverlay" onclick="closeExamplesOutside(event)">
@@ -2943,9 +3079,34 @@ Instant settlement adoption rate — target 25% of eligible settlement volume op
       if (!localStorage.getItem('arc_theme')) applyTheme(e.matches ? 'light' : 'dark');
     });
   });
+  // ── Shortcuts ─────────────────────────────────────────────────────
+  function openShortcuts() { document.getElementById('shortcutsOverlay').classList.add('open'); }
+  function closeShortcuts() { document.getElementById('shortcutsOverlay').classList.remove('open'); }
+  function closeShortcutsOutside(e) { if (e.target === document.getElementById('shortcutsOverlay')) closeShortcuts(); }
+
   document.addEventListener('keydown', e => {
-    if ((e.metaKey||e.ctrlKey) && e.key==='Enter') generate();
-    if (e.key === 'Escape') { closeBriefModal(); closeHistory(); closeExamples(); }
+    const tag = document.activeElement.tagName.toLowerCase();
+    const typing = tag === 'textarea' || tag === 'input';
+
+    // Always fire regardless of focus
+    if ((e.metaKey||e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); generate(); return; }
+    if (e.key === 'Escape') { closeBriefModal(); closeHistory(); closeExamples(); closeShortcuts(); return; }
+
+    // Only fire when not typing
+    if (!typing) {
+      if (e.key === '?') { e.preventDefault(); openShortcuts(); return; }
+    }
+
+    // Cmd/Ctrl shortcuts
+    if (e.metaKey || e.ctrlKey) {
+      const modeKeys = { '1':'prd', '2':'stories', '3':'criteria', '4':'metrics', '5':'risks' };
+      if (modeKeys[e.key]) { e.preventDefault(); setMode(modeKeys[e.key]); return; }
+      if (e.key === 'k' || e.key === 'K') { e.preventDefault(); clearOutput(); return; }
+      if (e.key === 'e' || e.key === 'E') { e.preventDefault(); openExamples(); return; }
+      if (e.key === 'h' || e.key === 'H') { e.preventDefault(); openHistory(); return; }
+      if ((e.key === 'c' || e.key === 'C') && !typing) { e.preventDefault(); copyOutput(); return; }
+      if (e.key === 'd' || e.key === 'D') { e.preventDefault(); downloadOutput(); return; }
+    }
   });
 </script>
 </body>
