@@ -627,6 +627,24 @@
     background: var(--gold); color: var(--bg);
     border-radius: 8px; padding: 1px 5px; font-weight: 600;
   }
+  /* Notion export button */
+.act-btn-notion {
+  color: var(--text2);
+  border-color: var(--border2);
+  display: flex; align-items: center; gap: 5px;
+}
+.act-btn-notion:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
+.act-btn-notion:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* Modal Notion button */
+.modal-notion {
+  background: transparent;
+  border: 1px solid var(--border2); border-radius: 10px;
+  padding: 9px 18px; color: var(--text2);
+  font-family: var(--body); font-size: 13px; cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-notion:hover { border-color: var(--aventurine); color: var(--aventurine-light); }
 
   /* Mode status tabs inside output panel */
   .mode-status-bar {
@@ -1653,6 +1671,10 @@
         <button class="act-btn" id="dlDocxBtn" onclick="exportDocx()" disabled>.docx</button>
         <button class="act-btn" id="dlPdfBtn" onclick="exportPdf()" disabled>.pdf</button>
         <div class="act-spacer"></div>
+        <button class="act-btn act-btn-notion" id="notionBtn" onclick="exportToNotion()" disabled>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Notion
+        </button>
         <button class="act-btn act-btn-brief" id="briefBtn" onclick="openBriefModal()" disabled>
           Full brief <span class="brief-count" id="briefCount">0</span>
         </button>
@@ -1687,6 +1709,9 @@
         </div>
         <div class="modal-footer-actions">
           <button class="modal-cancel" onclick="closeBriefModal()">Cancel</button>
+          <button class="modal-notion" id="modalNotionBtn" onclick="exportToNotionFromModal()">
+            Export to Notion →
+          </button>
           <button class="modal-download" id="modalDownloadBtn" onclick="downloadBrief()">Download <span id="modalCount">0</span> sections →</button>
         </div>
       </div>
@@ -2563,6 +2588,61 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
     .catch(() => toast('⚠ Export failed'))
     .finally(() => { btn.disabled = false; btn.textContent = `Download ${count} sections →`; updateModalBtn(); });
   }
+
+  // ── Notion Export ─────────────────────────────────────────────────
+async function exportToNotion() {
+  const o = latest();
+  if (!o) return;
+  const modeTitle = { prd:'Full PRD', stories:'User Stories', criteria:'Acceptance Criteria', metrics:'Success Metrics', risks:'Risks & Assumptions' };
+  const idea = document.getElementById('inputText').value.trim();
+  const title = idea ? `${idea.slice(0, 60)} — ${modeTitle[currentMode]}` : `Arcspect — ${modeTitle[currentMode]}`;
+  await sendToNotion(o, title, [modeTitle[currentMode]]);
+}
+
+async function exportToNotionFromModal() {
+  const sections = [];
+  const labels = { prd:'Full PRD', stories:'User Stories', criteria:'Acceptance Criteria', metrics:'Success Metrics', risks:'Risks & Assumptions' };
+  const modeOrder = ['prd','stories','criteria','metrics','risks'];
+  const included = [];
+  modeOrder.forEach(m => {
+    if (modalSelections[m] && modeCache[m]) {
+      sections.push(`# ${labels[m]}\n\n${modeCache[m].text}`);
+      included.push(labels[m]);
+    }
+  });
+  if (!sections.length) return;
+  const combined = sections.join('\n\n---\n\n');
+  const idea = document.getElementById('inputText').value.trim();
+  const title = idea ? `${idea.slice(0, 60)} — Full Brief` : `Arcspect — Full Brief`;
+  closeBriefModal();
+  await sendToNotion(combined, title, included);
+}
+
+async function sendToNotion(markdown, title, sections) {
+  const btn = document.getElementById('notionBtn');
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  toast('Sending to Notion...');
+  try {
+    const res = await fetch('/.netlify/functions/export-notion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ markdown, title, sections })
+    });
+    const data = await res.json();
+    if (data.error) {
+      toast('⚠ Notion export failed — check Netlify env vars');
+      return;
+    }
+    toast('✓ Exported to Notion');
+    if (data.pageUrl) window.open(data.pageUrl, '_blank');
+  } catch (err) {
+    toast('⚠ Notion export failed');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
+    updateBriefCount();
+  }
+}
 
   // ── Examples ──────────────────────────────────────────────────────
   const EXAMPLES = [
