@@ -766,6 +766,8 @@
   }
   .modal-download:hover { background: var(--aventurine-light); }
   .modal-download:disabled { opacity: 0.35; cursor: not-allowed; }
+  .modal-close { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border2); background: var(--surface2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: var(--muted); transition: all 0.2s; flex-shrink: 0; margin-left: 12px; }
+  .modal-close:hover { border-color: var(--danger); color: var(--danger); }
 
   /* ── Wireframes & Screenshots ── */
   .visuals-section { border-top: 1px solid var(--border); }
@@ -1671,7 +1673,7 @@
         <button class="act-btn" id="dlDocxBtn" onclick="exportDocx()" disabled>.docx</button>
         <button class="act-btn" id="dlPdfBtn" onclick="exportPdf()" disabled>.pdf</button>
         <div class="act-spacer"></div>
-        <button class="act-btn act-btn-notion" id="notionBtn" onclick="exportToNotion()" disabled>
+        <button class="act-btn act-btn-notion" id="notionBtn" onclick="openNotionModal()" disabled>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           Notion
         </button>
@@ -1686,9 +1688,12 @@
   <!-- FULL BRIEF MODAL -->
   <div class="modal-overlay" id="briefModal" onclick="closeBriefModalOutside(event)">
     <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title">Download full brief</div>
-        <div class="modal-sub">Select sections to include. Only generated sections can be downloaded.</div>
+      <div class="modal-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div>
+          <div class="modal-title">Download full brief</div>
+          <div class="modal-sub">Select sections to include. Only generated sections can be downloaded.</div>
+        </div>
+        <div class="modal-close" onclick="closeBriefModal()">×</div>
       </div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer">
@@ -1708,12 +1713,31 @@
           </div>
         </div>
         <div class="modal-footer-actions">
-          <button class="modal-cancel" onclick="closeBriefModal()">Cancel</button>
-          <button class="modal-notion" id="modalNotionBtn" onclick="exportToNotionFromModal()">
-            Export to Notion →
-          </button>
           <button class="modal-download" id="modalDownloadBtn" onclick="downloadBrief()">Download <span id="modalCount">0</span> sections →</button>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- NOTION EXPORT MODAL -->
+  <div class="modal-overlay" id="notionModal" onclick="closeNotionModalOutside(event)">
+    <div class="modal-box">
+      <div class="modal-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;background:#EDF2EE;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#080C09;flex-shrink:0;">N</div>
+          <div>
+            <div class="modal-title">Export to Notion</div>
+            <div class="modal-sub">Select sections to include</div>
+          </div>
+        </div>
+        <div class="modal-close" onclick="closeNotionModal()">×</div>
+      </div>
+      <div class="modal-body" id="notionModalBody"></div>
+      <div class="modal-footer">
+        <div style="margin-bottom:14px;padding:10px 12px;background:rgba(74,124,89,0.04);border-radius:10px;border:1px solid rgba(74,124,89,0.15);display:flex;align-items:center;gap:8px;">
+          <div style="width:16px;height:16px;background:#EDF2EE;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#080C09;flex-shrink:0;">N</div>
+          <div style="font-size:11px;color:var(--muted);">Sending to <span style="color:var(--text2);">Arcspect Exports</span> in your Notion workspace</div>
+        </div>
+        <button class="modal-download" id="notionSendBtn" onclick="sendToNotionFromModal()" style="width:100%;text-align:center;background:#EDF2EE;color:#080C09;">Send <span id="notionModalCount">0</span> sections to Notion →</button>
       </div>
     </div>
   </div>
@@ -2050,6 +2074,8 @@
     const count = Object.values(modeCache).filter(Boolean).length;
     document.getElementById('briefCount').textContent = count;
     document.getElementById('briefBtn').disabled = count === 0;
+    const nb = document.getElementById('notionBtn');
+    if (nb) nb.disabled = count === 0;
   }
 
   // ── switchMode — auto-generate if not cached ──────────────────────
@@ -2588,6 +2614,43 @@ Be precise. Only include real, named companies. Surface uncomfortable truths abo
     .catch(() => toast('⚠ Export failed'))
     .finally(() => { btn.disabled = false; btn.textContent = `Download ${count} sections →`; updateModalBtn(); });
   }
+ // ── Notion Modal ──────────────────────────────────────────────────
+ let _notionSelections = {};
+
+function openNotionModal() {
+  const body = document.getElementById('notionModalBody');
+  _notionSelections = {}; body.innerHTML = '';
+  modeOrder.forEach(m => {
+    const cached = modeCache[m]; const isReady = !!cached;
+    if (isReady) _notionSelections[m] = true;
+    const row = document.createElement('div');
+    row.className = 'modal-check-row' + (isReady ? ' checked' : ' mcr-disabled');
+    row.innerHTML = `<div class="modal-checkbox">${isReady ? '✓' : ''}</div><div class="modal-check-info"><div class="modal-check-name">${modeFull[m]}</div><div class="modal-check-status ${isReady ? 'mcs-ready' : 'mcs-pending'}">${isReady ? `Ready — ${cached.words} words` : 'Not yet generated'}</div></div>`;
+    if (isReady) { row.addEventListener('click', () => { _notionSelections[m] = !_notionSelections[m]; row.classList.toggle('checked', _notionSelections[m]); row.querySelector('.modal-checkbox').textContent = _notionSelections[m] ? '✓' : ''; updateNotionModalCount(); }); }
+    body.appendChild(row);
+  });
+  updateNotionModalCount();
+  document.getElementById('notionModal').classList.add('open');
+}
+
+function updateNotionModalCount() {
+  const count = Object.values(_notionSelections).filter(Boolean).length;
+  document.getElementById('notionModalCount').textContent = count;
+  document.getElementById('notionSendBtn').disabled = count === 0;
+}
+
+function closeNotionModal() { document.getElementById('notionModal').classList.remove('open'); }
+function closeNotionModalOutside(e) { if (e.target === document.getElementById('notionModal')) closeNotionModal(); }
+
+async function sendToNotionFromModal() {
+  const sections = []; const labels = { prd:'Full PRD', stories:'User Stories', criteria:'Acceptance Criteria', metrics:'Success Metrics', risks:'Risks & Assumptions' }; const included = [];
+  modeOrder.forEach(m => { if (_notionSelections[m] && modeCache[m]) { sections.push(`# ${labels[m]}\n\n${modeCache[m].text}`); included.push(labels[m]); } });
+  if (!sections.length) return;
+  const idea = document.getElementById('inputText').value.trim();
+  const title = idea ? `${idea.slice(0, 60)} — Full Brief` : 'Arcspect — Full Brief';
+  closeNotionModal();
+  await sendToNotion(sections.join('\n\n---\n\n'), title, included);
+}
 
   // ── Notion Export ─────────────────────────────────────────────────
 async function exportToNotion() {
@@ -3165,7 +3228,7 @@ Instant settlement adoption rate — target 25% of eligible settlement volume op
 
     // Always fire regardless of focus
     if ((e.metaKey||e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); generate(); return; }
-    if (e.key === 'Escape') { closeBriefModal(); closeHistory(); closeExamples(); closeShortcuts(); return; }
+    if (e.key === 'Escape') { closeBriefModal(); closeNotionModal(); closeHistory(); closeExamples(); closeShortcuts(); return; }
 
     // Only fire when not typing
     if (!typing) {
